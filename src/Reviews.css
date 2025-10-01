@@ -1,0 +1,92 @@
+.reviews-section {
+  background: #111827; /* tmavé pozadie */
+  color: #f9fafb;
+  padding: 4rem 2rem;
+  overflow: hidden;
+  width: 100vw;
+  max-width: 100vw;
+  box-sizing: border-box;
+}
+
+.reviews-title {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #f3f4f6;
+}
+
+/* kontajner pre riadok */
+.reviews-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  white-space: nowrap;
+}
+
+/* animácie */
+.reviews-row.left {
+  animation: scroll-left 40s linear infinite;
+}
+
+.reviews-row.right {
+  animation: scroll-right 40s linear infinite;
+}
+
+/* keyframes */
+@keyframes scroll-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes scroll-right {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
+/* karta */
+.review-card {
+  background: #1f2937;
+  border-radius: 10px;
+  padding: 1.5rem;
+  min-width: 280px;
+  max-width: 300px;
+  flex-shrink: 0;
+}
+
+.review-text {
+  font-size: 0.95rem;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+  color: #d1d5db;
+  word-break: break-word;
+  white-space: normal;
+}
+
+.review-author {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.review-author img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.review-author-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.review-name {
+  font-weight: bold;
+  color: #f9fafb;
+  font-size: 0.95rem;
+}
+
+.review-role {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
