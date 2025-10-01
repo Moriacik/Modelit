@@ -5,7 +5,7 @@ function Home() {
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost/projects.php")
+    fetch("http://localhost/app/src/php/projects.php")
       .then((res) => res.json())
       .then((data) => setProjects(data))
       .catch((err) => console.error("Chyba pri načítaní:", err));

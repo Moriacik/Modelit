@@ -6,7 +6,7 @@ function Reviews() {
   const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost/reviews.php")
+    fetch("http://localhost/app/src/php/reviews.php")
       .then((res) => {
         if (!res.ok) throw new Error("Chyba pri načítaní recenzií");
         return res.json();
