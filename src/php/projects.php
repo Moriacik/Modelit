@@ -13,7 +13,7 @@ if ($conn->connect_error) {
     die(json_encode(["error" => "Connection failed: " . $conn->connect_error]));
 }
 
-$sql = "SELECT id, title, description, link FROM portfolio";
+$sql = "SELECT id, title, description, image FROM portfolio";
 $result = $conn->query($sql);
 
 $projects = [];
