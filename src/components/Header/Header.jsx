@@ -13,8 +13,7 @@ function Header() {
         <nav className="nav">
           <ul className="nav-list">
             <li><Link to="/">Domov</Link></li>
-            <li><a href="#projects">Objednávky</a></li>
-            <li><a href="#reviews">Recenzie</a></li>
+            <li><Link to="/objednavka">Objednávka</Link></li>
             <li><Link to="/login">Prihlásenie</Link></li>
           </ul>
         </nav>

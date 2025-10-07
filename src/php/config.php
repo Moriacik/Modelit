@@ -3,7 +3,7 @@
 // Upravte tieto hodnoty podľa vašej konfigurácie
 
 $host = 'localhost';
-$dbname = 'portfolio'; // zmeňte na názov vašej databázy
+$dbname = 'test'; // zmeňte na názov vašej databázy
 $db_username = 'root';
 $db_password = ''; // vaše databázové heslo
 
@@ -12,7 +12,7 @@ function getDbConnection() {
     global $host, $dbname, $db_username, $db_password;
     try {
         $pdo = new PDO(
-            "mysql:host=$host;dbname=$dbname;charset=utf8",
+            "mysql:host=$host;dbname=$dbname;charset=utf8mb4",
             $db_username,
             $db_password
         );

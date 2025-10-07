@@ -11,18 +11,57 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// Zatiaľ neimplementované
-echo json_encode([
-    'success' => false,
-    'message' => 'Prihlásenie zákazníkov bude dostupné čoskoro'
-]);
+// Include databázovej konfigurácie
+require_once 'config.php';
 
-/*
-TODO: Implementácia user loginu
-1. Overiť číslo objednávky v databáze
-2. Overiť email priradený k objednávke
-3. Vygenerovať unikátny login link
-4. Odoslať email s linkom
-5. Link bude platný napr. 24 hodín
-*/
+// Získanie dát z request body
+$input = json_decode(file_get_contents('php://input'), true);
+
+if (!$input || !isset($input['orderCode'])) {
+    echo json_encode(['success' => false, 'message' => 'Chýba kód objednávky']);
+    exit;
+}
+
+$order_token = trim($input['orderCode']);
+
+try {
+    // Pripojenie k databáze
+    $pdo = getDbConnection();
+    
+    // Hľadanie objednávky podľa tokenu
+    $stmt = $pdo->prepare("SELECT id, order_token, meno, email, status FROM orders WHERE order_token = ?");
+    $stmt->execute([$order_token]);
+    $order = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if ($order) {
+        // Objednávka existuje - vygenerovať token pre session
+        session_start();
+        $user_token = bin2hex(random_bytes(32));
+        $_SESSION['user_token'] = $user_token;
+        $_SESSION['user_order_id'] = $order['id'];
+        $_SESSION['user_order_token'] = $order['order_token'];
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'Prihlásenie úspešné!',
+            'token' => $user_token,
+            'orderToken' => $order['order_token'],
+            'customerName' => $order['meno']
+        ]);
+        
+    } else {
+        // Objednávka nenájdená
+        echo json_encode([
+            'success' => false,
+            'message' => 'Objednávka s týmto kódom nebola nájdená'
+        ]);
+    }
+    
+} catch (PDOException $e) {
+    error_log("Database error: " . $e->getMessage());
+    echo json_encode([
+        'success' => false,
+        'message' => 'Chyba pri vyhľadávaní objednávky'
+    ]);
+}
 ?>

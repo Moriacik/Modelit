@@ -1,0 +1,250 @@
+.order-form-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 90px 20px 50px;
+}
+
+.order-form-container {
+  max-width: 800px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.order-form-container h1 {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  margin: 0;
+  padding: 30px 40px;
+  font-size: 2.2rem;
+  text-align: center;
+}
+
+.form-description {
+  padding: 20px 40px 0;
+  color: #666;
+  text-align: center;
+  font-size: 1.1rem;
+  margin-bottom: 0;
+}
+
+.order-form {
+  padding: 30px 40px 40px;
+}
+
+/* Sekcie formulára */
+.form-section {
+  margin-bottom: 40px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 30px;
+}
+
+.form-section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 20px;
+}
+
+.form-section h3 {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 1.3rem;
+  border-left: 4px solid #667eea;
+  padding-left: 15px;
+}
+
+/* Riadky formulára */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* Input štýly */
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.form-group input[type="file"] {
+  padding: 8px;
+  border: 2px dashed #d1d5db;
+  background: #f9fafb;
+}
+
+.form-group input[type="file"]:hover {
+  border-color: #667eea;
+  background: #f0f4ff;
+}
+
+/* File info */
+.file-info {
+  display: block;
+  margin-top: 5px;
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.selected-files {
+  margin-top: 15px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.selected-files p {
+  margin: 0 0 10px 0;
+  font-weight: 600;
+  color: #495057;
+}
+
+.selected-files ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.selected-files li {
+  margin-bottom: 5px;
+  color: #6c757d;
+}
+
+/* Submit tlačidlo */
+.submit-btn {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+}
+
+.submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.submit-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Správy */
+.message {
+  margin: 30px 40px 0;
+  padding: 15px 20px;
+  border-radius: 8px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.message.success {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.message.error {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.order-number {
+  margin-top: 15px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 6px;
+  border: 1px solid rgba(21, 87, 36, 0.3);
+}
+
+.order-number strong {
+  font-size: 1.1rem;
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Responsivita */
+@media (max-width: 768px) {
+  .order-form-page {
+    padding: 90px 10px 30px;
+  }
+  
+  .order-form-container {
+    margin: 0;
+    border-radius: 10px;
+  }
+  
+  .order-form-container h1 {
+    padding: 25px 20px;
+    font-size: 1.8rem;
+  }
+  
+  .form-description,
+  .order-form {
+    padding: 20px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  
+  .form-section h3 {
+    font-size: 1.2rem;
+  }
+  
+  .message {
+    margin: 20px 20px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .order-form-container h1 {
+    font-size: 1.6rem;
+  }
+  
+  .form-description,
+  .order-form {
+    padding: 15px;
+  }
+}

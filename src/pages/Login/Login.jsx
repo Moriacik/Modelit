@@ -8,8 +8,7 @@ function Login() {
     password: ''
   });
   const [userData, setUserData] = useState({
-    orderNumber: '',
-    email: ''
+    orderCode: ''
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -34,7 +33,9 @@ function Login() {
         setMessage('Prihlásenie úspešné!');
         // Presmerovanie na admin panel
         localStorage.setItem('adminToken', result.token);
-        window.location.href = '/admin';
+        setTimeout(() => {
+          window.location.href = '/admin';
+        }, 1000);
       } else {
         setMessage(result.message || 'Nesprávne prihlasovacie údaje');
       }
@@ -52,7 +53,7 @@ function Login() {
     setMessage('');
 
     try {
-      const response = await fetch('http://localhost/app/src/php/user-login.php', {
+      const response = await fetch('/app/src/php/user-login.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -63,12 +64,18 @@ function Login() {
       const result = await response.json();
       
       if (result.success) {
-        setMessage('Link na prihlásenie bol zaslaný na váš email!');
+        setMessage('Prihlásenie úspešné!');
+        // Presmerovanie na užívateľský panel alebo detail objednávky
+        localStorage.setItem('userToken', result.token);
+        localStorage.setItem('orderToken', result.orderToken);
+        setTimeout(() => {
+          window.location.href = '/order-detail';
+        }, 1000);
       } else {
-        setMessage(result.message || 'Objednávka nebola nájdená');
+        setMessage(result.message || 'Neplatný kód objednávky');
       }
     } catch (error) {
-      setMessage('Chyba pri odosielaní');
+      setMessage('Chyba pri prihlasovaní');
       console.error('User login error:', error);
     } finally {
       setLoading(false);
@@ -91,9 +98,8 @@ function Login() {
           <button 
             className={`type-btn ${loginType === 'user' ? 'active' : ''}`}
             onClick={() => setLoginType('user')}
-            disabled // Zatiaľ vypnuté
           >
-            Zákazník (čoskoro)
+            Zákazník
           </button>
         </div>
 
@@ -129,36 +135,23 @@ function Login() {
           </form>
         )}
 
-        {/* User prihlásenie (zatiaľ neaktívne) */}
+        {/* User prihlásenie */}
         {loginType === 'user' && (
           <form onSubmit={handleUserLogin} className="login-form">
             <h2>Prihlásenie zákazníka</h2>
             <div className="form-group">
-              <label htmlFor="orderNumber">Číslo objednávky:</label>
+              <label htmlFor="orderCode">Kód objednávky:</label>
               <input
                 type="text"
-                id="orderNumber"
-                value={userData.orderNumber}
-                onChange={(e) => setUserData({...userData, orderNumber: e.target.value})}
+                id="orderCode"
+                value={userData.orderCode}
+                onChange={(e) => setUserData({...userData, orderCode: e.target.value})}
                 required
-                placeholder="Napr. ORD-2024-001"
-                disabled
+                placeholder="Napr. ORD-2025-ABC12345"
               />
             </div>
-            <div className="form-group">
-              <label htmlFor="email">Email:</label>
-              <input
-                type="email"
-                id="email"
-                value={userData.email}
-                onChange={(e) => setUserData({...userData, email: e.target.value})}
-                required
-                placeholder="Zadajte váš email"
-                disabled
-              />
-            </div>
-            <button type="submit" disabled className="login-btn disabled">
-              Čoskoro dostupné
+            <button type="submit" disabled={loading} className="login-btn">
+              {loading ? 'Prihlasovanie...' : 'Prihlásiť sa'}
             </button>
           </form>
         )}
