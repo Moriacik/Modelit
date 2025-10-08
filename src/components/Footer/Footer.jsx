@@ -23,9 +23,6 @@ function Footer() {
             </div>
           </div>
         </div>
-        <div className="footer-bottom">
-          <p>&copy; 2024 Portfolio. Všetky práva vyhradené.</p>
-        </div>
       </div>
     </footer>
   );

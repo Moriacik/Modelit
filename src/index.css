@@ -1,4 +1,10 @@
 :root {
+  /* Farebná paleta */
+  --color-primary: #353b47;    /* Modrozelená - hlavná farba */
+  --color-accent-1: #4ea8e8;   /* Červená - akcent 1 */
+  --color-accent-2: #bfcad3;   /* Oranžová - akcent 2 */
+  --color-text: #feffff;      /* Béžová - texty */
+  
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;

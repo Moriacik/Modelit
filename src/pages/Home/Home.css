@@ -1,92 +1,151 @@
-/* Home page styly */
+/* Home Page Styles */
 .home-page {
+  margin: 0;
+  padding: 0;
   margin-top: 70px; /* pre fixed header */
+  background: var(--color-primary);
 }
 
+/* Hero Section s Paralax efektom */
 .hero-section {
-  min-height: 80vh;
-}
-
-/* Projects container styly */
-.projects-container {
-  width: 100%;
-  height: auto;
   position: relative;
+  overflow: hidden;
 }
 
-.slide {
-  width: 100%;
-  height: auto;
+.project-slide {
+  min-height: calc(100vh - 70px);
   position: relative;
+  overflow: hidden;
+  padding: 0;
 }
 
-.slide-image {
-  width: 100%;
-  height: auto;
-  display: block;
+/* Farebné pozadia */
+.yellow-bg {
+  background: var(--color-accent-1);
 }
 
-.slide-content {
+.white-bg {
+  background: var(--color-accent-2);
+}
+
+/* Obrázok zarovnaný doľava (nepárne projekty) */
+.project-image {
+  position: absolute;
+  top: -10%;
+  left: 0;
+  width: 60%; /* Zmenšený na 60% šírky */
+  height: 120%; /* Väčší pre paralax efekt */
+  object-fit: cover;
+  object-position: left center;
+  z-index: 1;
+}
+
+/* Obrázok zarovnaný doprava (párne projekty) */
+.white-bg .project-image {
+  left: auto;
+  right: 0;
+  object-position: right center;
+}
+
+/* Text overlay (nepárne projekty - vpravo) */
+.project-text {
   position: absolute;
   top: 50%;
-  right: 8%;
+  right: 80px;
   transform: translateY(-50%);
+  max-width: 1100px;
+  z-index: 2;
+  padding: 0;
   text-align: right;
-  color: black;
-  max-width: 40%;
-  font-weight: 600;
-  text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.7);
 }
 
-.slide-content h1 {
-  font-size: 2.5rem;
-  margin-bottom: 10px;
+/* Text overlay (párne projekty - vľavo) */
+.white-bg .project-text {
+  right: auto;
+  left: 80px;
+  text-align: left;
 }
 
-.slide-content p {
-  font-size: 1.2rem;
-  margin-bottom: 15px;
+/* Farebné texty */
+.yellow-bg .project-text {
+  color: var(--color-text);
 }
 
-.slide-content a {
+.white-bg .project-text {
+  color: var(--color-text);
+}
+
+.project-text h2 {
+  font-size: 6rem;
+  font-weight: 800;
+  margin-bottom: 30px;
+  line-height: 0.9;
+  text-transform: lowercase;
+  letter-spacing: -3px;
+}
+
+.project-text p {
+  font-size: 1.3rem;
+  line-height: 1.5;
+  margin-bottom: 40px;
+  opacity: 0.85;
+  font-style: italic;
+  font-weight: 400;
+  max-width: 550px;
+  margin-left: auto;
+}
+
+/* Paragrafy v párnych projektoch (zarovnané vľavo) */
+.white-bg .project-text p {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+
+
+.project-link {
   display: inline-block;
-  padding: 10px 20px;
-  background: #000;
-  color: white;
+  padding: 16px 40px;
+  border-radius: 50px;
   text-decoration: none;
-  border-radius: 5px;
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 2px solid transparent;
 }
 
-.slide-content a:hover {
-  background: #333;
+.yellow-bg .project-link {
+  background: var(--color-primary);
+  color: var(--color-text);
+  border-color: var(--color-primary);
 }
 
-/* Bodky (indikátory) */
-.dots {
-  position: absolute;
-  bottom: 15px;
-  right: 25px;
-  display: flex;
-  gap: 10px;
+.yellow-bg .project-link:hover {
+  background: transparent;
+  color: var(--color-text);
+  border-color: var(--color-text);
+  transform: translateX(10px);
 }
 
-.dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: gray;
-  cursor: pointer;
+.white-bg .project-link {
+  background: var(--color-primary);
+  color: var(--color-text);
+  border-color: var(--color-primary);
 }
 
-.dot.active {
-  background: black;
+.white-bg .project-link:hover {
+  background: transparent;
+  color: var(--color-text);
+  border-color: var(--color-text);
+  transform: translateX(10px);
 }
 
 /* Reviews section styly */
 .reviews-section {
-  background: #111827;
-  color: #f9fafb;
+  background: var(--color-primary);
+  color: var(--color-text);
   padding: 4rem 2rem;
   overflow: hidden;
   width: 100%;
@@ -95,10 +154,10 @@
 
 .reviews-title {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 4rem;
   font-size: 2rem;
   font-weight: bold;
-  color: #f3f4f6;
+  color: #dcd8d1;
 }
 
 .reviews-row {
@@ -127,7 +186,7 @@
 }
 
 .review-card {
-  background: #1f2937;
+  background: var(--color-accent-1);
   border-radius: 10px;
   padding: 1.5rem;
   min-width: 280px;
@@ -139,7 +198,7 @@
   font-size: 0.95rem;
   line-height: 1.4;
   margin-bottom: 1rem;
-  color: #d1d5db;
+  color: var(--color-text);
   word-break: break-word;
   white-space: normal;
 }
@@ -163,11 +222,18 @@
 
 .review-name {
   font-weight: bold;
-  color: #f9fafb;
+  color: var(--color-text);
   font-size: 0.95rem;
 }
 
 .review-role {
   font-size: 0.8rem;
-  color: #9ca3af;
+  color: var(--color-accent-2);
 }
+
+/* Reviews wrapper */
+.reviews-wrapper {
+  padding: 80px 0;
+  background: #315d67;
+}
+

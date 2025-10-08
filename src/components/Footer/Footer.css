@@ -1,7 +1,7 @@
 .footer {
-  background: #333;
-  color: #fff;
-  margin-top: 50px;
+  background: var(--color-accent-1);
+  color: var(--color-text);
+  margin-top: 0;
 }
 
 .footer-container {
@@ -20,12 +20,12 @@
 .footer-section h3,
 .footer-section h4 {
   margin-bottom: 15px;
-  color: #fff;
+  color: var(--color-text);
 }
 
 .footer-section p {
-  margin-bottom: 10px;
-  color: #ccc;
+  color: var(--color-text);
+  opacity: 0.8;
 }
 
 .social-links {
@@ -34,27 +34,16 @@
 }
 
 .social-links a {
-  color: #ccc;
+  color: var(--color-text);
   text-decoration: none;
   padding: 8px 12px;
-  border: 1px solid #555;
+  border: 1px solid var(--color-primary);
   border-radius: 4px;
   transition: all 0.3s ease;
 }
 
 .social-links a:hover {
-  color: #fff;
-  border-color: #007bff;
-  background: #007bff;
-}
-
-.footer-bottom {
-  border-top: 1px solid #555;
-  padding-top: 20px;
-  text-align: center;
-}
-
-.footer-bottom p {
-  margin: 0;
-  color: #ccc;
+  color: var(--color-text);
+  border-color: var(--color-accent-2);
+  background: var(--color-accent-2);
 }
