@@ -1,239 +1,210 @@
-/* Home Page Styles */
+/* Modern Minimalist Home Page - Hero Section */
 .home-page {
   margin: 0;
   padding: 0;
-  margin-top: 70px; /* pre fixed header */
-  background: var(--color-primary);
-}
-
-/* Hero Section s Paralax efektom */
-.hero-section {
-  position: relative;
-  overflow: hidden;
-}
-
-.project-slide {
+  margin-top: 70px; /* offset for fixed header */
   min-height: calc(100vh - 70px);
-  position: relative;
-  overflow: hidden;
-  padding: 0;
 }
 
-/* Farebné pozadia */
-.yellow-bg {
-  background: var(--color-accent-1);
-}
-
-.white-bg {
-  background: var(--color-accent-2);
-}
-
-/* Obrázok zarovnaný doľava (nepárne projekty) */
-.project-image {
-  position: absolute;
-  top: -10%;
-  left: 0;
-  width: 60%; /* Zmenšený na 60% šírky */
-  height: 120%; /* Väčší pre paralax efekt */
-  object-fit: cover;
-  object-position: left center;
-  z-index: 1;
-}
-
-/* Obrázok zarovnaný doprava (párne projekty) */
-.white-bg .project-image {
-  left: auto;
-  right: 0;
-  object-position: right center;
-}
-
-/* Text overlay (nepárne projekty - vpravo) */
-.project-text {
-  position: absolute;
-  top: 50%;
-  right: 80px;
-  transform: translateY(-50%);
-  max-width: 1100px;
-  z-index: 2;
-  padding: 0;
-  text-align: right;
-}
-
-/* Text overlay (párne projekty - vľavo) */
-.white-bg .project-text {
-  right: auto;
-  left: 80px;
-  text-align: left;
-}
-
-/* Farebné texty */
-.yellow-bg .project-text {
-  color: var(--color-text);
-}
-
-.white-bg .project-text {
-  color: var(--color-text);
-}
-
-.project-text h2 {
-  font-size: 6rem;
-  font-weight: 800;
-  margin-bottom: 30px;
-  line-height: 0.9;
-  text-transform: lowercase;
-  letter-spacing: -3px;
-}
-
-.project-text p {
-  font-size: 1.3rem;
-  line-height: 1.5;
-  margin-bottom: 40px;
-  opacity: 0.85;
-  font-style: italic;
-  font-weight: 400;
-  max-width: 550px;
-  margin-left: auto;
-}
-
-/* Paragrafy v párnych projektoch (zarovnané vľavo) */
-.white-bg .project-text p {
-  margin-left: 0;
-  margin-right: auto;
-}
-
-
-
-.project-link {
-  display: inline-block;
-  padding: 16px 40px;
-  border-radius: 50px;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  border: 2px solid transparent;
-}
-
-.yellow-bg .project-link {
-  background: var(--color-primary);
-  color: var(--color-text);
-  border-color: var(--color-primary);
-}
-
-.yellow-bg .project-link:hover {
-  background: transparent;
-  color: var(--color-text);
-  border-color: var(--color-text);
-  transform: translateX(10px);
-}
-
-.white-bg .project-link {
-  background: var(--color-primary);
-  color: var(--color-text);
-  border-color: var(--color-primary);
-}
-
-.white-bg .project-link:hover {
-  background: transparent;
-  color: var(--color-text);
-  border-color: var(--color-text);
-  transform: translateX(10px);
-}
-
-/* Reviews section styly */
-.reviews-section {
-  background: var(--color-primary);
-  color: var(--color-text);
-  padding: 4rem 2rem;
-  overflow: hidden;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.reviews-title {
-  text-align: center;
-  margin-bottom: 4rem;
-  font-size: 2rem;
-  font-weight: bold;
-  color: #dcd8d1;
-}
-
-.reviews-row {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  white-space: nowrap;
-}
-
-.reviews-row.left {
-  animation: scroll-left 40s linear infinite;
-}
-
-.reviews-row.right {
-  animation: scroll-right 40s linear infinite;
-}
-
-@keyframes scroll-left {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
-@keyframes scroll-right {
-  from { transform: translateX(-50%); }
-  to { transform: translateX(0); }
-}
-
-.review-card {
-  background: var(--color-accent-1);
-  border-radius: 10px;
-  padding: 1.5rem;
-  min-width: 280px;
-  max-width: 300px;
-  flex-shrink: 0;
-}
-
-.review-text {
-  font-size: 0.95rem;
-  line-height: 1.4;
-  margin-bottom: 1rem;
-  color: var(--color-text);
-  word-break: break-word;
-  white-space: normal;
-}
-
-.review-author {
+/* Hero Section */
+.hero {
+  min-height: calc(100vh - 70px);
+  background: linear-gradient(90deg, #1a1a1a 50%, #212121 50%);
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
 }
 
-.review-author img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+/* Hero container removed - elements positioned directly in hero */
+
+/* Left Content */
+.hero-content {
+  color: white;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 50%;
+  height: 40vh;
+  z-index: 2;
 }
 
-.review-author-info {
+.hero-content h1 {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: white;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  position: absolute;
+  left: 8rem;
+  top: -25vh;
+  z-index: 5;
+  margin: 0;
+}
+
+.hero-description {
+  background-image: url('/img/img3.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 60%; 
+  height: 200px;
+  border-radius: 0 12px 12px 0;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0;
 }
 
-.review-name {
-  font-weight: bold;
+.hero-description-text {
+  padding: 2rem 1.5rem;
+  border-radius: 8px;
+  width: 350px;
+  margin-right: 8rem;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-description h3,
+.hero-description p {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-description h3 {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 400;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.hero-description p {
+  font-size: .9rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Center Visual */
+.hero-visual {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+  width: auto;
+  z-index: 3;
+}
+
+/* Remove color divider - not needed anymore */
+
+.hero-image {
+  height: 70vh;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3));
+  transition: transform 0.5s ease, filter 0.3s ease;
+}
+
+.hero-image:hover {
+  transform: scale(1.15);
+  filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.5));
+}
+
+/* Orange Accent Element - removed to match design */
+
+/* Right Content */
+.hero-details {
+  color: white;
+  text-align: left;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 50%;
+  height: 40vh;
+  z-index: 2;
+}
+
+.hero-details-box {
+  background-image: url('/img/img4.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 60%;
+  height: 200px;
+  border-radius: 12px 0 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0;
+}
+
+.hero-details-text {
+  padding: 2rem 1.5rem;
+  border-radius: 8px;
+  width: 350px;
+  margin-left: 10rem;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-details-box h3,
+.hero-details-box p {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-details h3 {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 400;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.hero-details p {
+  font-size: .9rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Navigation Arrow */
+.hero-navigation {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.nav-arrow {
+  background: none;
+  border: 2px solid var(--color-text);
   color: var(--color-text);
-  font-size: 0.95rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.review-role {
-  font-size: 0.8rem;
-  color: var(--color-accent-2);
+.nav-arrow:hover {
+  background: var(--color-text);
+  color: #2a2a2a;
+  transform: translateX(5px);
 }
-
-/* Reviews wrapper */
-.reviews-wrapper {
-  padding: 80px 0;
-  background: #315d67;
-}
-
