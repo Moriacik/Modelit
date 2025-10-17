@@ -92,10 +92,9 @@ function OrderForm() {
   return (
     <div className="order-form-page">
       <div className="order-form-container">
-        <h1>Vytvorenie objednávky</h1>
-        <p className="form-description">
-          Vyplňte formulár below a my sa vám čoskoro ozveme s cenovou ponukou a detailmi projektu.
-        </p>
+        <div className="order-header">
+          <h1>Vytvorenie objednávky</h1>
+        </div>
 
         <form onSubmit={handleSubmit} className="order-form">
           {/* Základné informácie */}

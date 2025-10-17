@@ -85,81 +85,111 @@ function Login() {
   return (
     <div className="login-page">
       <div className="login-container">
-        <h1>Prihlásenie</h1>
+        {/* Header Section */}
+        <div className="login-header">
+          <h1>Prihlásenie do systému</h1>
+          <p>Vyberte si spôsob prihlásenia</p>
+        </div>
         
-        {/* Prepínač typu prihlásenia */}
-        <div className="login-type-selector">
-          <button 
-            className={`type-btn ${loginType === 'admin' ? 'active' : ''}`}
+        {/* Login Type Cards */}
+        <div className="login-type-cards">
+          <div 
+            className={`login-card ${loginType === 'admin' ? 'active' : ''}`}
             onClick={() => setLoginType('admin')}
           >
-            Administrátor
-          </button>
-          <button 
-            className={`type-btn ${loginType === 'user' ? 'active' : ''}`}
+            <div className="card-icon">
+              <div className="icon-admin"></div>
+            </div>
+            <h3>Administrátor</h3>
+          </div>
+          
+          <div 
+            className={`login-card ${loginType === 'user' ? 'active' : ''}`}
             onClick={() => setLoginType('user')}
           >
-            Zákazník
-          </button>
+            <div className="card-icon">
+              <div className="icon-user"></div>
+            </div>
+            <h3>Zákazník</h3>
+          </div>
         </div>
 
-        {/* Admin prihlásenie */}
-        {loginType === 'admin' && (
-          <form onSubmit={handleAdminLogin} className="login-form">
-            <h2>Prihlásenie administrátora</h2>
-            <div className="form-group">
-              <label htmlFor="username">Používateľské meno:</label>
-              <input
-                type="text"
-                id="username"
-                value={adminData.username}
-                onChange={(e) => setAdminData({...adminData, username: e.target.value})}
-                required
-                placeholder="Zadajte používateľské meno"
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="password">Heslo:</label>
-              <input
-                type="password"
-                id="password"
-                value={adminData.password}
-                onChange={(e) => setAdminData({...adminData, password: e.target.value})}
-                required
-                placeholder="Zadajte heslo"
-              />
-            </div>
-            <button type="submit" disabled={loading} className="login-btn">
-              {loading ? 'Prihlasovanie...' : 'Prihlásiť sa'}
-            </button>
-          </form>
-        )}
+        {/* Login Forms */}
+        <div className="login-forms">
+          {/* Admin prihlásenie */}
+          {loginType === 'admin' && (
+            <form onSubmit={handleAdminLogin} className="login-form admin-form">
+              
+              <div className="form-group">
+                <label htmlFor="username">Používateľské meno</label>
+                <div className="input-wrapper">
+                  <input
+                    type="text"
+                    id="username"
+                    value={adminData.username}
+                    onChange={(e) => setAdminData({...adminData, username: e.target.value})}
+                    required
+                    placeholder="admin"
+                  />
+                </div>
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="password">Heslo</label>
+                <div className="input-wrapper">
+                  <input
+                    type="password"
+                    id="password"
+                    value={adminData.password}
+                    onChange={(e) => setAdminData({...adminData, password: e.target.value})}
+                    required
+                    placeholder="••••••••"
+                  />
+                </div>
+              </div>
+              
+              <button type="submit" disabled={loading} className="login-btn admin-btn">
+                <span>{loading ? 'Prihlasovanie...' : 'Prihlásiť sa'}</span>
+                <div className="btn-arrow">→</div>
+              </button>
+            </form>
+          )}
 
-        {/* User prihlásenie */}
-        {loginType === 'user' && (
-          <form onSubmit={handleUserLogin} className="login-form">
-            <h2>Prihlásenie zákazníka</h2>
-            <div className="form-group">
-              <label htmlFor="orderCode">Kód objednávky:</label>
-              <input
-                type="text"
-                id="orderCode"
-                value={userData.orderCode}
-                onChange={(e) => setUserData({...userData, orderCode: e.target.value})}
-                required
-                placeholder="Napr. ORD-2025-ABC12345"
-              />
-            </div>
-            <button type="submit" disabled={loading} className="login-btn">
-              {loading ? 'Prihlasovanie...' : 'Prihlásiť sa'}
-            </button>
-          </form>
-        )}
+          {/* User prihlásenie */}
+          {loginType === 'user' && (
+            <form onSubmit={handleUserLogin} className="login-form user-form">
+              
+              <div className="form-group">
+                <label htmlFor="orderCode">Kód objednávky</label>
+                <div className="input-wrapper">
+                  <input
+                    type="text"
+                    id="orderCode"
+                    value={userData.orderCode}
+                    onChange={(e) => setUserData({...userData, orderCode: e.target.value})}
+                    required
+                    placeholder="ORD-2025-ABC12345"
+                  />
+                </div>
+              </div>
+              
+              <div className="order-help">
+                <p>Váš kód objednávky nájdete v potvrdzujúcom e-maile</p>
+              </div>
+              
+              <button type="submit" disabled={loading} className="login-btn user-btn">
+                <span>{loading ? 'Overovanie...' : 'Pokračovať'}</span>
+                <div className="btn-arrow">→</div>
+              </button>
+            </form>
+          )}
+        </div>
 
-        {/* Správy */}
+        {/* Messages */}
         {message && (
-          <div className={`message ${message.includes('úspešné') || message.includes('zaslaný') ? 'success' : 'error'}`}>
-            {message}
+          <div className={`message-container ${message.includes('úspešné') || message.includes('zaslaný') ? 'success' : 'error'}`}>
+            <div className="message-icon"></div>
+            <div className="message-text">{message}</div>
           </div>
         )}
       </div>

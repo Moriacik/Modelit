@@ -6,23 +6,23 @@ function Footer() {
       <div className="footer-container">
         <div className="footer-content">
           <div className="footer-section">
-            <h3>Portfolio</h3>
-            <p>Profesionálne webové riešenia a dizajn.</p>
-          </div>
-          <div className="footer-section">
             <h4>Kontakt</h4>
-            <p>Email: info@portfolio.sk</p>
-            <p>Telefón: +421 123 456 789</p>
+            <ul>
+              <li>info@qualix.sk</li>
+            </ul>
           </div>
+          
           <div className="footer-section">
             <h4>Sledujte nás</h4>
             <div className="social-links">
-              <a href="#" aria-label="Facebook">FB</a>
-              <a href="#" aria-label="Instagram">IG</a>
-              <a href="#" aria-label="LinkedIn">LI</a>
+              <a href="#" aria-label="LinkedIn">IN</a>
+              <a href="#" aria-label="GitHub">GH</a>
+              <a href="#" aria-label="Twitter">TW</a>
             </div>
           </div>
         </div>
+        
+
       </div>
     </footer>
   );
