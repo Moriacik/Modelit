@@ -158,40 +158,24 @@
   align-items: center;
 }
 
-.status-select {
-  padding: 6px 8px;
-  border: 1px solid rgba(8, 216, 192, 0.3);
-  border-radius: 4px;
-  font-size: 0.8rem;
-  background: rgba(26, 26, 26, 0.8);
-  cursor: pointer;
-  color: white;
-}
-
-.status-select option {
-  color: white;
-  background: rgba(26, 26, 26, 0.9);
-}
-
-.view-btn {
+.manage-btn {
   background: var(--color-primary);
   color: var(--color-accent-1);
   border: none;
-  padding: 6px 8px;
-  border-radius: 50%;
+  padding: 8px 16px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: bold;
-  font-style: italic;
-  width: 28px;
-  height: 28px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
+  gap: 6px;
+  min-width: 120px;
 }
 
-.view-btn:hover {
+.manage-btn:hover {
   background: rgba(8, 216, 192, 0.8);
   transform: translateY(-1px);
 }
@@ -200,144 +184,6 @@
   text-align: center;
   padding: 60px 20px;
   color: rgba(255, 255, 255, 0.7);
-}
-
-/* Modal Styles */
-.order-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  padding: 20px;
-  backdrop-filter: blur(10px);
-}
-
-.order-modal {
-  background: rgba(42, 42, 42, 0.95);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(8, 216, 192, 0.3);
-  border-radius: 16px;
-  max-width: 700px;
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-.modal-header {
-  padding: 25px 30px;
-  border-bottom: 1px solid rgba(8, 216, 192, 0.2);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(26, 26, 26, 0.8);
-  border-radius: 16px 16px 0 0;
-}
-
-.modal-header h3 {
-  margin: 0;
-  color: var(--color-primary);
-  font-size: 1.3rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: rgba(255, 255, 255, 0.7);
-  padding: 5px;
-  border-radius: 4px;
-  transition: all 0.3s ease;
-}
-
-.close-btn:hover {
-  background: rgba(8, 216, 192, 0.1);
-  color: var(--color-primary);
-}
-
-.modal-content {
-  padding: 30px;
-}
-
-.order-info-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.info-item {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.info-item.full-width {
-  grid-column: 1 / -1;
-}
-
-.info-item label {
-  font-weight: 600;
-  color: var(--color-primary);
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.info-item span {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 1rem;
-}
-
-.description-text {
-  background: rgba(26, 26, 26, 0.6);
-  padding: 15px;
-  border-radius: 6px;
-  margin: 0;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(8, 216, 192, 0.1);
-}
-
-.files-list {
-  margin: 10px 0 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.files-list li {
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(8, 216, 192, 0.1);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.files-list li:last-child {
-  border-bottom: none;
-}
-
-.files-list a {
-  color: var(--color-primary);
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.files-list a:hover {
-  text-decoration: underline;
-  color: var(--color-text);
-}
-
-.file-size {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.8rem;
 }
 
 /* Responsive Design */
@@ -366,19 +212,10 @@
     gap: 5px;
   }
   
-  .order-modal {
-    margin: 10px;
-    max-height: calc(100vh - 20px);
-  }
-  
-  .modal-header,
-  .modal-content {
-    padding: 20px;
-  }
-  
-  .order-info-grid {
-    grid-template-columns: 1fr;
-    gap: 15px;
+  .manage-btn {
+    min-width: 100px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
   }
 }
 
@@ -392,7 +229,9 @@
     padding: 3px 8px;
   }
   
-  .modal-header h3 {
-    font-size: 1.1rem;
+  .manage-btn {
+    min-width: 80px;
+    padding: 5px 10px;
+    font-size: 0.75rem;
   }
 }

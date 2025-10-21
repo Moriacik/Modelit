@@ -65,7 +65,7 @@ try {
     
     // Spracovanie súborov
     $referencne_subory = [];
-    $upload_dir = '../uploads/orders/';
+    $upload_dir = '/var/www/html/uploads/orders/';
     
     // Vytvorenie upload adresára ak neexistuje
     if (!is_dir($upload_dir)) {
@@ -97,8 +97,8 @@ try {
     }
     
     // Uloženie do databázy
-    $sql = "INSERT INTO orders (meno, email, popis_prace, odhadovana_cena, deadline, referencne_subory, order_token) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO orders (customer_name, customer_email, description, estimated_price, deadline, order_token) 
+            VALUES (?, ?, ?, ?, ?, ?)";
     
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
@@ -107,7 +107,6 @@ try {
         $popis_prace,
         $odhadovana_cena,
         $deadline,
-        json_encode($referencne_subory),
         $order_token
     ]);
     

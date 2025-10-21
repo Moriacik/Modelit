@@ -29,7 +29,7 @@ try {
     $pdo = getDbConnection();
     
     // Hľadanie objednávky podľa tokenu
-    $stmt = $pdo->prepare("SELECT id, order_token, meno, email, status FROM orders WHERE order_token = ?");
+    $stmt = $pdo->prepare("SELECT id, order_token, customer_name as meno, customer_email as email, status FROM orders WHERE order_token = ?");
     $stmt->execute([$order_token]);
     $order = $stmt->fetch(PDO::FETCH_ASSOC);
     

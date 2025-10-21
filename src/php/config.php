@@ -1,11 +1,11 @@
 <?php
-// Databázová konfigurácia
-// Upravte tieto hodnoty podľa vašej konfigurácie
+// Databázová konfigurácia pre Docker
 
-$host = 'localhost';
-$dbname = 'test'; // zmeňte na názov vašej databázy
-$db_username = 'root';
-$db_password = ''; // vaše databázové heslo
+// Použitie environment premenných pre Docker
+$host = getenv('DB_HOST') ?: 'db'; // Docker service name
+$dbname = getenv('DB_NAME') ?: 'vaii_semestralka';
+$db_username = getenv('DB_USER') ?: 'vaii_user';
+$db_password = getenv('DB_PASS') ?: 'vaii_pass';
 
 // Funkcia pre pripojenie k databáze
 function getDbConnection() {

@@ -6,6 +6,8 @@ import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import OrderForm from './pages/Orders/OrderForm';
 import AdminDashboard from './pages/Admin/AdminDashboard';
+import OrderInfoAdmin from './pages/Admin/OrderInfoAdmin';
+import OrderInfoUser from './pages/OrderInfo/OrderInfoUser';
 import './App.css';
 
 function AppContent() {
@@ -26,6 +28,8 @@ function AppContent() {
         <Route path="/login" element={<Login />} />
         <Route path="/objednavka" element={<OrderForm />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/order/:orderId" element={<OrderInfoAdmin />} />
+        <Route path="/order-detail/:orderToken" element={<OrderInfoUser />} />
       </Routes>
       <Footer />
     </div>

@@ -1,4 +1,6 @@
 <?php
+require_once 'config.php';
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
@@ -28,19 +30,12 @@ if (!$input || !isset($input['username']) || !isset($input['password'])) {
 $username = trim($input['username']);
 $password = trim($input['password']);
 
-// Nastavenia databázy
-$host = 'localhost';
-$dbname = 'test'; // zmeňte na názov vašej databázy
-$db_username = 'root';
-$db_password = ''; // vaše databázové heslo
-
 try {
-    // Pripojenie k databáze
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $db_username, $db_password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // Pripojenie k databáze pomocou config.php
+    $pdo = getDbConnection();
     
     // Hľadanie admin používateľa v databáze
-    $stmt = $pdo->prepare("SELECT id, name, password_hash FROM admin WHERE name = ?");
+    $stmt = $pdo->prepare("SELECT id, username, password_hash FROM admins WHERE username = ?");
     $stmt->execute([$username]);
     $admin = $stmt->fetch(PDO::FETCH_ASSOC);
     
@@ -49,17 +44,17 @@ try {
         session_start();
         $_SESSION['admin_logged_in'] = true;
         $_SESSION['admin_id'] = $admin['id'];
-        $_SESSION['admin_username'] = $admin['name'];
+        $_SESSION['admin_username'] = $admin['username'];
         $_SESSION['login_time'] = time();
         
         // Generovanie jednoduchého tokenu (v produkcii použiť JWT)
-        $token = base64_encode($admin['name'] . ':' . time() . ':' . rand(1000, 9999));
+        $token = base64_encode($admin['username'] . ':' . time() . ':' . rand(1000, 9999));
         
         echo json_encode([
             'success' => true,
             'message' => 'Prihlásenie úspešné',
             'token' => $token,
-            'username' => $admin['name']
+            'username' => $admin['username']
         ]);
     } else {
         // Neúspešné prihlásenie
@@ -69,10 +64,10 @@ try {
         ]);
     }
     
-} catch (PDOException $e) {
+} catch (Exception $e) {
     echo json_encode([
         'success' => false,
-        'message' => 'Chyba databázy'
+        'message' => 'Chyba databázy: ' . $e->getMessage()
     ]);
 }
 ?>

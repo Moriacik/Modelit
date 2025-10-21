@@ -27,18 +27,18 @@ try {
     // Získanie všetkých objednávok
     $sql = "SELECT 
                 id, 
-                meno, 
-                email, 
-                popis_prace, 
-                odhadovana_cena, 
+                customer_name as meno, 
+                customer_email as email, 
+                description as popis_prace, 
+                estimated_price as odhadovana_cena, 
                 deadline, 
-                referencne_subory, 
+                '' as referencne_subory, 
                 status, 
                 order_token, 
-                datum_vytvorenia, 
-                datum_aktualizacie 
+                created_at as datum_vytvorenia, 
+                updated_at as datum_aktualizacie 
             FROM orders 
-            ORDER BY datum_vytvorenia DESC";
+            ORDER BY created_at DESC";
     
     $stmt = $pdo->prepare($sql);
     $stmt->execute();

@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
 function Login() {
+  const navigate = useNavigate();
   const [loginType, setLoginType] = useState('admin');
   const [adminData, setAdminData] = useState({
     username: '',
@@ -34,7 +36,7 @@ function Login() {
         // Presmerovanie na admin panel
         localStorage.setItem('adminToken', result.token);
         setTimeout(() => {
-          window.location.href = '/admin';
+          navigate('/admin');
         }, 1000);
       } else {
         setMessage(result.message || 'Nesprávne prihlasovacie údaje');
@@ -69,7 +71,7 @@ function Login() {
         localStorage.setItem('userToken', result.token);
         localStorage.setItem('orderToken', result.orderToken);
         setTimeout(() => {
-          window.location.href = '/order-detail';
+          navigate(`/order-detail/${result.orderToken}`);
         }, 1000);
       } else {
         setMessage(result.message || 'Neplatný kód objednávky');

@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './OrdersTable.css';
 
 function OrdersTable() {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [selectedOrder, setSelectedOrder] = useState(null);
   const [statusFilter, setStatusFilter] = useState('all');
 
   useEffect(() => {
@@ -31,44 +32,14 @@ function OrdersTable() {
     }
   };
 
-  const updateOrderStatus = async (orderId, newStatus) => {
-    try {
-      const response = await fetch('/app/src/php/update-order-status.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          order_id: orderId,
-          status: newStatus
-        })
-      });
-
-      const result = await response.json();
-      
-      if (result.success) {
-        // Aktualizácia lokálneho stavu
-        setOrders(orders.map(order => 
-          order.id === orderId 
-            ? { ...order, status: newStatus }
-            : order
-        ));
-        setError('');
-      } else {
-        setError(result.message || 'Chyba pri aktualizácii statusu');
-      }
-    } catch (err) {
-      setError('Chyba pri komunikácii so serverom');
-      console.error('Update status error:', err);
-    }
-  };
-
   const getStatusColor = (status) => {
     switch (status) {
       case 'nova': return '#f39c12';
-      case 'v_procese': return '#3498db';
-      case 'dokoncena': return '#27ae60';
-      case 'zrusena': return '#e74c3c';
+      case 'pending': return '#9b59b6';
+      case 'price_negotiation': return '#e67e22';
+      case 'in_progress': return '#3498db';
+      case 'completed': return '#27ae60';
+      case 'cancelled': return '#e74c3c';
       default: return '#95a5a6';
     }
   };
@@ -76,9 +47,11 @@ function OrdersTable() {
   const getStatusText = (status) => {
     switch (status) {
       case 'nova': return 'Nová';
-      case 'v_procese': return 'V procese';
-      case 'dokoncena': return 'Dokončená';
-      case 'zrusena': return 'Zrušená';
+      case 'pending': return 'Čakajúca';
+      case 'price_negotiation': return 'Vyjednávanie';
+      case 'in_progress': return 'V procese';
+      case 'completed': return 'Dokončená';
+      case 'cancelled': return 'Zrušená';
       default: return status;
     }
   };
@@ -120,9 +93,11 @@ function OrdersTable() {
           >
             <option value="all">Všetky statusy</option>
             <option value="nova">Nové</option>
-            <option value="v_procese">V procese</option>
-            <option value="dokoncena">Dokončené</option>
-            <option value="zrusena">Zrušené</option>
+            <option value="pending">Čakajúce</option>
+            <option value="price_negotiation">Vyjednávanie</option>
+            <option value="in_progress">V procese</option>
+            <option value="completed">Dokončené</option>
+            <option value="cancelled">Zrušené</option>
           </select>
         </div>
       </div>
@@ -171,23 +146,12 @@ function OrdersTable() {
                 </td>
                 <td className="order-created">{formatDate(order.datum_vytvorenia)}</td>
                 <td className="order-actions">
-                  <select
-                    value={order.status}
-                    onChange={(e) => updateOrderStatus(order.id, e.target.value)}
-                    className="status-select"
-                  >
-                    <option value="nova">Nová</option>
-                    <option value="v_procese">V procese</option>
-                    <option value="dokoncena">Dokončená</option>
-                    <option value="zrusena">Zrušená</option>
-                  </select>
-                  
                   <button
-                    onClick={() => setSelectedOrder(order)}
-                    className="view-btn"
-                    title="Zobraziť detaily"
+                    onClick={() => navigate(`/admin/order/${order.id}`)}
+                    className="manage-btn"
+                    title="Spravovať objednávku"
                   >
-                    i
+                    ⚙️ Spravovať
                   </button>
                 </td>
               </tr>
@@ -201,68 +165,6 @@ function OrdersTable() {
           </div>
         )}
       </div>
-
-      {/* Order Detail Modal */}
-      {selectedOrder && (
-        <div className="order-modal-overlay" onClick={() => setSelectedOrder(null)}>
-          <div className="order-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>Detail objednávky {selectedOrder.order_token}</h3>
-              <button 
-                onClick={() => setSelectedOrder(null)}
-                className="close-btn"
-              >
-                ✕
-              </button>
-            </div>
-            
-            <div className="modal-content">
-              <div className="order-info-grid">
-                <div className="info-item">
-                  <label>Zákazník:</label>
-                  <span>{selectedOrder.meno}</span>
-                </div>
-                
-                <div className="info-item">
-                  <label>Email:</label>
-                  <span>{selectedOrder.email}</span>
-                </div>
-                
-                <div className="info-item">
-                  <label>Odhadovaná cena:</label>
-                  <span>{formatPrice(selectedOrder.odhadovana_cena)}</span>
-                </div>
-                
-                <div className="info-item">
-                  <label>Deadline:</label>
-                  <span>{selectedOrder.deadline ? formatDate(selectedOrder.deadline) : 'Nezadané'}</span>
-                </div>
-                
-                <div className="info-item full-width">
-                  <label>Popis práce:</label>
-                  <p className="description-text">{selectedOrder.popis_prace}</p>
-                </div>
-
-                {selectedOrder.referencne_subory && JSON.parse(selectedOrder.referencne_subory).length > 0 && (
-                  <div className="info-item full-width">
-                    <label>Referenčné súbory:</label>
-                    <ul className="files-list">
-                      {JSON.parse(selectedOrder.referencne_subory).map((file, index) => (
-                        <li key={index}>
-                          <a href={`/app/uploads/orders/${file.filename}`} target="_blank" rel="noopener noreferrer">
-                            {file.original_name}
-                          </a>
-                          <span className="file-size">({(file.size / 1024 / 1024).toFixed(2)} MB)</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
