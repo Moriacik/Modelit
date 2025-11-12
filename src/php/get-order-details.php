@@ -40,6 +40,7 @@ try {
                 description as popis_prace, 
                 estimated_price as odhadovana_cena, 
                 admin_price,
+                agreed_price,
                 price_status,
                 deadline, 
                 referencne_subory, 
@@ -47,7 +48,15 @@ try {
                 status, 
                 order_token, 
                 created_at as datum_vytvorenia, 
-                updated_at as datum_aktualizacie 
+                updated_at as datum_aktualizacie,
+                deposit_required,
+                deposit_paid_at,
+                midway_required,
+                midway_paid_at,
+                final_required,
+                final_paid_at,
+                draft_ready,
+                final_ready
             FROM orders 
             WHERE order_token = :token";
     

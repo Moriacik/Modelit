@@ -100,7 +100,7 @@ try {
                   WHERE id = :order_id";
     
     $updateStmt = $pdo->prepare($updateSql);
-    $adminPrice = ($offeredBy === 'admin') ? $counterPrice : $order['admin_price'];
+    $adminPrice = ($offeredBy === 'admin') ? $counterPrice : ($order['admin_price'] ?? null);
     $updateStmt->bindParam(':admin_price', $adminPrice, PDO::PARAM_STR);
     $updateStmt->bindParam(':order_id', $orderId, PDO::PARAM_INT);
     

@@ -1,0 +1,405 @@
+/* Payment Plan Section V2 - Timeline Style */
+
+.payment-plan-v2 {
+  margin-bottom: 0;
+  padding: 40px 0 0 0;
+}
+
+/* ===================== Timeline Header ===================== */
+.timeline-header {
+  margin-bottom: 40px;
+}
+
+.timeline-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 24px 0;
+}
+
+/* Timeline Summary Stats */
+.timeline-summary {
+  display: flex;
+  gap: 32px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  flex-wrap: wrap;
+}
+
+.summary-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 150px;
+  padding: 16px;
+  background: rgba(26, 26, 26, 0.5);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-label::before {
+  content: none !important;
+  display: none !important;
+}
+
+.stat-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: white;
+}
+
+.stat-value.paid {
+  background: linear-gradient(135deg, var(--color-text), var(--color-accent-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ===================== Payment Plan Grid - New Layout ===================== */
+.payment-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+/* Payment Stage Card - bez viditeľného boxu */
+.payment-stage {
+  display: grid;
+  grid-template-rows: auto auto auto auto;
+  gap: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  transition: none;
+  position: relative;
+}
+
+/* Row 1: Label */
+.stage-label {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
+  text-align: center;
+  padding: 16px 12px 8px 12px;
+  border: none;
+}
+
+/* Row 2: Timeline with dot */
+.stage-timeline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 60px;
+  position: relative;
+  padding: 0 12px;
+}
+
+/* Timeline line - cez všetky checkpointy */
+.payment-plan-grid::before {
+  content: '';
+  position: absolute;
+  /* Výpočet pozície: prvý riadok (label ~42px) + pol druhého riadku (~30px) - pol hrúbky čiary (3px) */
+  top: 78px;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  z-index: 0;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}
+
+/* Progress bar */
+.payment-plan-grid::after {
+  content: '';
+  position: absolute;
+  top: 78px;
+  left: 0;
+  height: 6px;
+  background: linear-gradient(to right,
+    var(--color-accent-1) 0%,
+    var(--color-accent-2) 100%);
+  border-radius: 3px;
+  z-index: 1;
+  width: var(--progress-width, 0%);
+  transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 0 15px rgba(245, 130, 66, 0.5);
+  pointer-events: none;
+}
+
+.stage-dot {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(26, 26, 26, 0.9);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+  z-index: 10;
+  position: relative;
+}
+
+.stage-dot.active {
+  background: var(--color-accent-2);
+  border-color: var(--color-accent-2);
+  box-shadow: 0 0 15px rgba(249, 180, 0, 0.6);
+  width: 24px;
+  height: 24px;
+}
+
+.stage-dot.completed {
+  background: var(--color-accent-2);
+  border-color: var(--color-accent-2);
+  box-shadow: 0 0 15px rgba(249, 180, 0, 0.6);
+}
+
+.stage-date {
+  display: none;
+}
+
+/* Row 3: Amount */
+.stage-amount {
+  font-size: 1.5rem;
+  font-weight: 800;
+  text-align: center;
+  color: white;
+  padding: 0 12px 6px 12px;
+}
+
+/* Row 4: Button */
+.stage-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  margin: 8px auto 0 auto;
+  display: inline-block;
+  width: auto;
+}
+
+.stage-btn.deposit {
+  background: var(--color-primary);
+  color: white;
+}
+
+.stage-btn.midway {
+  background: var(--color-accent-2);
+  color: var(--color-accent-1);
+}
+
+.stage-btn.final {
+  background: var(--color-text);
+  color: white;
+}
+
+.stage-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  opacity: 0.9;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.stage-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.stage-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.stage-btn-placeholder {
+  height: 36px;
+  background: transparent;
+}
+
+/* ===================== Payment Completed ===================== */
+.payment-completed {
+  text-align: center;
+  padding: 40px;
+  background: linear-gradient(135deg,
+    rgba(229, 95, 66, 0.15) 0%,
+    rgba(26, 26, 26, 0.8) 100%);
+  border: 2px solid rgba(229, 95, 66, 0.3);
+  border-radius: 12px;
+}
+
+.completed-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+  animation: checkmark 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes checkmark {
+  0% {
+    transform: scale(0) rotate(-45deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
+.payment-completed h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 12px 0;
+}
+
+.payment-completed p {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ===================== Responsive Design ===================== */
+@media (max-width: 1024px) {
+  .payment-plan-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .payment-plan-v2 {
+    padding: 24px;
+  }
+
+  .timeline-header h2 {
+    font-size: 1.4rem;
+  }
+
+  .timeline-summary {
+    gap: 16px;
+    flex-direction: column;
+  }
+
+  .summary-stat {
+    min-width: auto;
+  }
+
+  .payment-plan-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stage-label {
+    font-size: 1rem;
+    padding: 12px 12px 6px 12px;
+  }
+
+  .stage-timeline {
+    min-height: 50px;
+  }
+
+  .stage-amount {
+    font-size: 1.3rem;
+    padding: 16px 12px 0 12px;
+  }
+
+  .stage-btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    margin: 8px auto 0 auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .payment-plan-v2 {
+    padding: 16px;
+  }
+
+  .timeline-header h2 {
+    font-size: 1.2rem;
+    margin-bottom: 16px;
+  }
+
+  .timeline-summary {
+    gap: 12px;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+  }
+
+  .stat-value {
+    font-size: 1.4rem;
+  }
+
+  .stage-label {
+    font-size: 0.95rem;
+    padding: 10px 12px 4px 12px;
+  }
+
+  .stage-timeline {
+    min-height: 45px;
+    padding: 0 12px;
+  }
+
+  .stage-dot {
+    width: 18px;
+    height: 18px;
+    border-width: 2px;
+  }
+
+  .stage-dot.active {
+    width: 22px;
+    height: 22px;
+  }
+
+  .stage-amount {
+    font-size: 1.1rem;
+    padding: 14px 12px 0 12px;
+  }
+
+  .stage-btn {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+    margin: 6px auto 0 auto;
+  }
+
+  .stage-btn-placeholder {
+    height: 32px;
+  }
+
+  .payment-completed {
+    padding: 24px;
+  }
+
+  .completed-icon {
+    font-size: 2.5rem;
+  }
+
+  .payment-completed h3 {
+    font-size: 1.2rem;
+  }
+
+  .payment-completed p {
+    font-size: 0.9rem;
+  }
+}

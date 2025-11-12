@@ -373,19 +373,23 @@ const OrderInfoAdmin = () => {
             <div className="negotiations-list">
               {negotiations.map((neg, index) => (
                 <div key={index} className={`negotiation-item ${neg.offered_by}`}>
-                  <div className="neg-header">
-                    <span className="neg-by">
-                      {neg.offered_by === 'admin' ? 'Váš protinávrh' : 'Protinávrh klienta'}
-                    </span>
-                    <span className="neg-date">
-                      {new Date(neg.created_at).toLocaleDateString('sk-SK')}
-                    </span>
+                  <div className="neg-left">
+                    <div className="neg-header">
+                      <span className="neg-by">
+                        {neg.offered_by === 'admin' ? 'Váš protinávrh' : 'Protinávrh zákazníka'}
+                      </span>
+                      <span className="neg-date">
+                        {new Date(neg.created_at).toLocaleDateString('sk-SK')}
+                      </span>
+                    </div>
+                    {neg.note && <div className="neg-note">{neg.note}</div>}
                   </div>
-                  <div className="neg-price">{neg.price}€</div>
-                  {neg.note && <div className="neg-note">{neg.note}</div>}
-                  <div className={`neg-status ${neg.status}`}>
-                    {neg.status === 'pending' ? 'Čaká na odpoveď' : 
-                     neg.status === 'accepted' ? 'Prijatý' : 'Odmietnutý'}
+                  <div className="neg-right">
+                    <div className="neg-price">{neg.price}€</div>
+                    <div className={`neg-status ${neg.status}`}>
+                      {neg.status === 'pending' ? 'Čaká' : 
+                       neg.status === 'accepted' ? '✓ Prijatý' : '✕ Odmietnutý'}
+                    </div>
                   </div>
                 </div>
               ))}

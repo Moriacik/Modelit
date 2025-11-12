@@ -112,6 +112,14 @@ try {
     
     $order_id = $pdo->lastInsertId();
     
+    // Ak zákazník zadal cenu, vytvor prvý záznam v price_negotiations ako ponuka od zákazníka
+    if ($odhadovana_cena !== null && $odhadovana_cena > 0) {
+        $neg_sql = "INSERT INTO price_negotiations (order_id, price, offered_by, status, created_at) 
+                    VALUES (?, ?, 'customer', 'pending', NOW())";
+        $neg_stmt = $pdo->prepare($neg_sql);
+        $neg_stmt->execute([$order_id, $odhadovana_cena]);
+    }
+    
     echo json_encode([
         'success' => true,
         'message' => 'Objednávka bola úspešne vytvorená',

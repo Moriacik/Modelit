@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import './OrderInfoUser.css';
+import PaymentPlanSection from './PaymentPlanSection';
 
 const OrderInfoUser = () => {
   const { orderToken } = useParams();
@@ -13,6 +14,32 @@ const OrderInfoUser = () => {
   const [negotiations, setNegotiations] = useState([]);
   const [newCounterOffer, setNewCounterOffer] = useState('');
   const [counterOfferNote, setCounterOfferNote] = useState('');
+
+  // Handler pre aktualizáciu objednávky po platbe
+  const handleOrderUpdate = (updatedOrder) => {
+    setOrder(updatedOrder);
+    // Reload order details zo serveru aby bol state synchronizovaný
+    const reloadOrderDetails = async () => {
+      try {
+        const response = await fetch(`/app/src/php/get-order-details.php?token=${orderToken}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+
+        const result = await response.json();
+        if (result.success) {
+          setOrder(result.order);
+        }
+      } catch (error) {
+        console.error('Error reloading order details:', error);
+      }
+    };
+    
+    // Reload po 500ms aby backend stihol updatovať
+    setTimeout(reloadOrderDetails, 500);
+  };
 
   // Načítanie detailov objednávky
   useEffect(() => {
@@ -311,19 +338,23 @@ const OrderInfoUser = () => {
               <div className="negotiations-list">
                 {negotiations.map((neg, index) => (
                   <div key={index} className={`negotiation-item ${neg.offered_by}`}>
-                    <div className="neg-header">
-                      <span className="neg-by">
-                        {neg.offered_by === 'admin' ? 'Ponuka od správcu' : 'Váš protinávrh'}
-                      </span>
-                      <span className="neg-date">
-                        {new Date(neg.created_at).toLocaleDateString('sk-SK')}
-                      </span>
+                    <div className="neg-left">
+                      <div className="neg-header">
+                        <span className="neg-by">
+                          {neg.offered_by === 'admin' ? 'Ponuka od správcu' : 'Váš protinávrh'}
+                        </span>
+                        <span className="neg-date">
+                          {new Date(neg.created_at).toLocaleDateString('sk-SK')}
+                        </span>
+                      </div>
+                      {neg.note && <div className="neg-note">{neg.note}</div>}
                     </div>
-                    <div className="neg-price">{neg.price}€</div>
-                    {neg.note && <div className="neg-note">{neg.note}</div>}
-                    <div className={`neg-status ${neg.status}`}>
-                      {neg.status === 'pending' ? 'Čaká na vašu odpoveď' : 
-                       neg.status === 'accepted' ? 'Prijatý' : 'Odmietnutý'}
+                    <div className="neg-right">
+                      <div className="neg-price">{neg.price}€</div>
+                      <div className={`neg-status ${neg.status}`}>
+                        {neg.status === 'pending' ? 'Čaká' : 
+                         neg.status === 'accepted' ? '✓ Prijatý' : '✕ Odmietnutý'}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -385,6 +416,11 @@ const OrderInfoUser = () => {
               </div>
             )}
           </div>
+        )}
+
+        {/* Payment Plan Section */}
+        {order && order.agreed_price && (
+          <PaymentPlanSection order={order} onOrderUpdate={handleOrderUpdate} />
         )}
 
         {/* Download Section */}

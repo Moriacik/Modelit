@@ -248,24 +248,27 @@
 }
 
 .price-item {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
   align-items: center;
-  padding: 16px 20px;
-  background: rgba(42, 42, 42, 0.8);
+  padding: 20px;
+  background: rgba(26, 26, 26, 0.5);
   border-radius: 8px;
-  margin-bottom: 16px;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 4px solid var(--color-accent-2);
 }
 
 .price-item label {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .price {
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: 800;
   color: var(--color-accent-2);
 }
@@ -280,14 +283,16 @@
 }
 
 .negotiation-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 20px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  align-items: start;
+  padding: 20px;
   background: rgba(42, 42, 42, 0.8);
   border-radius: 8px;
   margin-bottom: 16px;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 4px solid var(--color-primary);
 }
 
 .negotiation-item.admin {
@@ -301,29 +306,46 @@
 .neg-left {
   display: flex;
   flex-direction: column;
+  gap: 8px;
+}
+
+.neg-header {
+  display: flex;
+  flex-direction: column;
   gap: 4px;
 }
 
 .neg-by {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .neg-date {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.5);
 }
 
 .neg-note {
-  color: rgba(255, 255, 255, 0.8);
+  background: rgba(26, 26, 26, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 10px 12px;
+  color: rgba(255, 255, 255, 0.85);
   font-style: italic;
-  font-size: 0.85rem;
-  margin-top: 4px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.neg-right {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
 }
 
 .neg-price {
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: 800;
   color: var(--color-primary);
 }
@@ -333,11 +355,13 @@
 }
 
 .neg-status {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  padding: 4px 8px;
+  padding: 6px 12px;
   border-radius: 12px;
   display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .neg-status.pending {
