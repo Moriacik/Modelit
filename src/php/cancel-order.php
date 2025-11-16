@@ -59,7 +59,7 @@ try {
     $updateSql = "UPDATE orders 
                   SET status = 'cancelled',
                       price_status = 'rejected',
-                      datum_aktualizacie = NOW() 
+                      updated_at = NOW() 
                   WHERE id = :order_id";
     
     $updateStmt = $pdo->prepare($updateSql);

@@ -79,6 +79,28 @@ const OrderInfoUser = () => {
       setError('Neplatný token objednávky');
       setLoading(false);
     }
+
+    // Automatické reloadovanie dát každých 5 sekúnd
+    const interval = setInterval(() => {
+      if (orderToken) {
+        fetchOrderDetails();
+      }
+    }, 5000);
+
+    // Reloadovanie dát keď sa okno vráti do focusu
+    const handleFocus = () => {
+      if (orderToken) {
+        fetchOrderDetails();
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+
+    // Cleanup
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('focus', handleFocus);
+    };
   }, [orderToken]);
 
   // Funkcia pre prijatie cenovej ponuky od admina
@@ -424,7 +446,7 @@ const OrderInfoUser = () => {
         )}
 
         {/* Download Section */}
-        {order.status === 'completed' && order.final_files && order.final_files.length > 0 && (
+        {order.status === 'completed' && order.final_files && order.final_files.length > 0 && order.final_paid_at && (
           <div className="download-section">
             <h2>Stiahnutie finálneho produktu</h2>
             <p>Váš projekt je dokončený! Môžete si stiahnuť finálne súbory:</p>
@@ -453,6 +475,42 @@ const OrderInfoUser = () => {
                   >
                     <div className="download-icon"></div>
                     Stiahnuť
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Download Section - Payment Pending */}
+        {order.status === 'completed' && order.final_files && order.final_files.length > 0 && !order.final_paid_at && (
+          <div className="download-section" style={{opacity: 0.6}}>
+            <h2>Stiahnutie finálneho produktu</h2>
+            <p style={{color: '#FF6B6B', fontWeight: '600'}}>Finálne súbory budú dostupné po zaplatení finálnej čiastky</p>
+            <div className="download-files">
+              {order.final_files.map((file, index) => (
+                <div key={index} className="download-item">
+                  <div className="file-info">
+                    <div className="file-icon"></div>
+                    <div className="file-details">
+                      <span className="file-name">
+                        {typeof file === 'string' ? file : file.original_name || file.filename || 'Súbor'}
+                      </span>
+                      <span className="file-size">
+                        {typeof file === 'object' && file.size 
+                          ? `${(file.size / 1024).toFixed(1)} KB` 
+                          : 'Neznáma veľkosť'
+                        }
+                      </span>
+                    </div>
+                  </div>
+                  <button 
+                    disabled
+                    className="download-btn"
+                    style={{opacity: 0.5, cursor: 'not-allowed'}}
+                  >
+                    <div className="download-icon"></div>
+                    Čakajú na zaplatenie
                   </button>
                 </div>
               ))}

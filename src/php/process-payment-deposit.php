@@ -52,7 +52,8 @@ try {
     
     // Aktualizácia databázy - zaznamenanie zaplatenia zálohy
     $updateSql = "UPDATE orders 
-                  SET deposit_paid_at = NOW() 
+                  SET deposit_paid_at = NOW(),
+                      updated_at = NOW()
                   WHERE id = :id";
     
     $updateStmt = $pdo->prepare($updateSql);

@@ -4,7 +4,7 @@ import './Login.css';
 
 function Login() {
   const navigate = useNavigate();
-  const [loginType, setLoginType] = useState('admin');
+  const [loginType, setLoginType] = useState('user');
   const [adminData, setAdminData] = useState({
     username: '',
     password: ''
@@ -96,16 +96,6 @@ function Login() {
         {/* Login Type Cards */}
         <div className="login-type-cards">
           <div 
-            className={`login-card ${loginType === 'admin' ? 'active' : ''}`}
-            onClick={() => setLoginType('admin')}
-          >
-            <div className="card-icon">
-              <div className="icon-admin"></div>
-            </div>
-            <h3>Administrátor</h3>
-          </div>
-          
-          <div 
             className={`login-card ${loginType === 'user' ? 'active' : ''}`}
             onClick={() => setLoginType('user')}
           >
@@ -113,6 +103,16 @@ function Login() {
               <div className="icon-user"></div>
             </div>
             <h3>Zákazník</h3>
+          </div>
+          
+          <div 
+            className={`login-card ${loginType === 'admin' ? 'active' : ''}`}
+            onClick={() => setLoginType('admin')}
+          >
+            <div className="card-icon">
+              <div className="icon-admin"></div>
+            </div>
+            <h3>Administrátor</h3>
           </div>
         </div>
 

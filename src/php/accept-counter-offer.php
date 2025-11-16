@@ -64,6 +64,11 @@ try {
         throw new Exception('Žiadna čakajúca ponuka od správcu');
     }
     
+    // Výpočet cien pre jednotlivé milestones (30% - 30% - 40%)
+    $depositRequired = round($negotiation['price'] * 0.3, 2);
+    $midwayRequired = round($negotiation['price'] * 0.3, 2);
+    $finalRequired = round($negotiation['price'] * 0.4, 2);
+    
     // Aktualizácia vyjednávania na accepted
     $updateNegotiationSql = "UPDATE price_negotiations 
                              SET status = 'accepted', responded_at = NOW() 
@@ -80,12 +85,18 @@ try {
     $updateOrderSql = "UPDATE orders 
                        SET price_status = 'agreed',
                            agreed_price = :agreed_price,
+                           deposit_required = :deposit_required,
+                           midway_required = :midway_required,
+                           final_required = :final_required,
                            status = 'in_progress',
                            updated_at = NOW() 
                        WHERE id = :order_id";
     
     $updateOrderStmt = $pdo->prepare($updateOrderSql);
     $updateOrderStmt->bindParam(':agreed_price', $negotiation['price'], PDO::PARAM_STR);
+    $updateOrderStmt->bindParam(':deposit_required', $depositRequired, PDO::PARAM_STR);
+    $updateOrderStmt->bindParam(':midway_required', $midwayRequired, PDO::PARAM_STR);
+    $updateOrderStmt->bindParam(':final_required', $finalRequired, PDO::PARAM_STR);
     $updateOrderStmt->bindParam(':order_id', $order['id'], PDO::PARAM_INT);
     
     if (!$updateOrderStmt->execute()) {

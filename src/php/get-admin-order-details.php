@@ -46,7 +46,10 @@ try {
                 referencne_subory, 
                 final_files,
                 status, 
-                order_token, 
+                order_token,
+                deposit_paid_at,
+                midway_paid_at,
+                final_paid_at,
                 created_at as datum_vytvorenia, 
                 updated_at as datum_aktualizacie 
             FROM orders 

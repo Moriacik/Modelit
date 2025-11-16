@@ -1,7 +1,12 @@
 <?php
-header('Content-Type: application/json');
+// Nastavenie error reporting pred všetkým ostatným
+error_reporting(E_ALL);
+ini_set('display_errors', 0); // Nezobrazuj chyby v odpovedi
+ini_set('log_errors', 1);
+
+header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST');
+header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
 // Handle preflight OPTIONS request
@@ -26,23 +31,44 @@ if (!isset($_POST['order_id']) || empty($_POST['order_id'])) {
     exit;
 }
 
-if (!isset($_FILES['files']) || empty($_FILES['files']['name'][0])) {
+// Zisť či máme súbory - skúšame obe varianty (files[] a files)
+$filesKey = isset($_FILES['files[]']) ? 'files[]' : (isset($_FILES['files']) ? 'files' : null);
+
+if (!$filesKey || empty($_FILES[$filesKey]['name'][0])) {
     echo json_encode(['success' => false, 'message' => 'Neboli vybrané žiadne súbory']);
     exit;
 }
 
 $orderId = $_POST['order_id'];
-$uploadDir = '/var/www/html/uploads/completed/';
 
-// Vytvorenie adresára ak neexistuje
-if (!file_exists($uploadDir)) {
-    if (!mkdir($uploadDir, 0777, true)) {
-        echo json_encode(['success' => false, 'message' => 'Chyba pri vytváraní adresára pre súbory']);
-        exit;
-    }
-}
+// Inicializácia premenných mimo try bloku pre catch handler
+$uploadedFiles = [];
+// Použitie /tmp pre upload, potom presun do /var/www/html
+$uploadDirTemp = '/tmp/uploads_' . getenv('USER') . '/'; 
+$uploadDir = __DIR__ . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'completed' . DIRECTORY_SEPARATOR;
+$pdo = null;
 
 try {
+    // Vytvorenie dočasného adresára ak neexistuje
+    if (!file_exists($uploadDirTemp)) {
+        if (!mkdir($uploadDirTemp, 0777, true)) {
+            throw new Exception('Chyba pri vytváraní dočasného adresára pre súbory');
+        }
+    }
+    
+    // Zabezpečenie oprávnení dočasného adresára
+    @chmod($uploadDirTemp, 0777);
+    
+    // Vytvorenie finálneho adresára ak neexistuje
+    if (!file_exists($uploadDir)) {
+        if (!mkdir($uploadDir, 0777, true)) {
+            throw new Exception('Chyba pri vytváraní adresára pre súbory');
+        }
+    }
+    
+    // Zabezpečenie oprávnení adresára
+    @chmod($uploadDir, 0777);
+    
     // Pripojenie k databáze
     $pdo = getDbConnection();
     
@@ -61,11 +87,10 @@ try {
     }
     
     // Povolené typy súborov
-    $allowedTypes = ['stl', 'zip', 'pdf', 'jpg', 'jpeg', 'png', 'txt', 'doc', 'docx'];
+    $allowedTypes = ['stl', 'zip'];
     $maxFileSize = 50 * 1024 * 1024; // 50MB
     
-    $uploadedFiles = [];
-    $files = $_FILES['files'];
+    $files = $_FILES[$filesKey];
     
     // Spracovanie každého súboru
     for ($i = 0; $i < count($files['name']); $i++) {
@@ -90,11 +115,25 @@ try {
         
         // Generovanie jedinečného názvu súboru
         $uniqueFileName = $order['order_token'] . '_' . time() . '_' . $i . '.' . $fileExtension;
+        $targetPathTemp = $uploadDirTemp . $uniqueFileName;
         $targetPath = $uploadDir . $uniqueFileName;
         
-        // Presun súboru
-        if (!move_uploaded_file($fileTmpName, $targetPath)) {
+        // Presun súboru do dočasného adresára
+        if (!move_uploaded_file($fileTmpName, $targetPathTemp)) {
+            error_log("Upload to temp failed for {$fileName}. TmpName: {$fileTmpName}, Target: {$targetPathTemp}");
+            error_log("Temp dir writable: " . (is_writable($uploadDirTemp) ? 'yes' : 'no'));
             throw new Exception("Chyba pri ukladaní súboru: {$fileName}");
+        }
+        
+        // Skúsime presunúť do finálneho miesta
+        if (!copy($targetPathTemp, $targetPath)) {
+            @unlink($targetPathTemp); // Vyčistim temp file
+            error_log("Copy to final failed for {$fileName}. From: {$targetPathTemp}, To: {$targetPath}");
+            error_log("Final dir writable: " . (is_writable($uploadDir) ? 'yes' : 'no'));
+            // Ak copy zlyhá, pokračujeme s temp file ako finálnym (fallback)
+            $targetPath = $targetPathTemp;
+        } else {
+            @unlink($targetPathTemp); // Vyčistim temp file po úspešnom kopírovaní
         }
         
         // Pridanie do zoznamu nahraných súborov
@@ -112,7 +151,7 @@ try {
     
     $updateSql = "UPDATE orders 
                   SET final_files = :final_files,
-                      datum_aktualizacie = NOW() 
+                      updated_at = NOW() 
                   WHERE id = :order_id";
     
     $updateStmt = $pdo->prepare($updateSql);
@@ -123,20 +162,26 @@ try {
         throw new Exception('Chyba pri aktualizácii databázy');
     }
     
-    // Log aktivity
-    $logSql = "INSERT INTO order_logs (order_id, action, description, datum_vytvorenia) 
-               VALUES (:order_id, :action, :description, NOW())";
-    
+    // Log aktivity - skip ak tabuľka neexistuje
     try {
-        $logStmt = $pdo->prepare($logSql);
-        $logStmt->bindParam(':order_id', $orderId, PDO::PARAM_INT);
-        $logStmt->bindValue(':action', 'final_files_uploaded', PDO::PARAM_STR);
-        $description = 'Nahrané finálne súbory: ' . implode(', ', array_column($uploadedFiles, 'original_name'));
-        $logStmt->bindParam(':description', $description, PDO::PARAM_STR);
-        $logStmt->execute();
+        $logCheckSql = "SHOW TABLES LIKE 'order_logs'";
+        $logCheckStmt = $pdo->prepare($logCheckSql);
+        $logCheckStmt->execute();
+        
+        if ($logCheckStmt->rowCount() > 0) {
+            $logSql = "INSERT INTO order_logs (order_id, action, description, datum_vytvorenia) 
+                       VALUES (:order_id, :action, :description, NOW())";
+            
+            $logStmt = $pdo->prepare($logSql);
+            $logStmt->bindParam(':order_id', $orderId, PDO::PARAM_INT);
+            $logStmt->bindValue(':action', 'final_files_uploaded', PDO::PARAM_STR);
+            $description = 'Nahrané finálne súbory: ' . implode(', ', array_column($uploadedFiles, 'original_name'));
+            $logStmt->bindParam(':description', $description, PDO::PARAM_STR);
+            $logStmt->execute();
+        }
     } catch (Exception $e) {
-        // Log chyby, ale neprerušuj hlavný proces
-        error_log("Error logging order activity: " . $e->getMessage());
+        // Log tabuľka neexistuje, pokračuj ďalej
+        error_log("Order logs not available: " . $e->getMessage());
     }
     
     // Commit transakcie
@@ -151,7 +196,7 @@ try {
     
 } catch (PDOException $e) {
     // Rollback transakcie a vymazanie nahraných súborov
-    if ($pdo->inTransaction()) {
+    if ($pdo && $pdo->inTransaction()) {
         $pdo->rollback();
     }
     
@@ -170,7 +215,7 @@ try {
     ]);
 } catch (Exception $e) {
     // Rollback transakcie a vymazanie nahraných súborov
-    if (isset($pdo) && $pdo->inTransaction()) {
+    if ($pdo && $pdo->inTransaction()) {
         $pdo->rollback();
     }
     

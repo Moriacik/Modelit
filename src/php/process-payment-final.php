@@ -38,21 +38,33 @@ try {
     $pdo = getDbConnection();
     
     // Overenie tokenu objednávky
-    $verifySql = "SELECT id FROM orders WHERE id = :id AND order_token = :token";
+    $verifySql = "SELECT id, final_files FROM orders WHERE id = :id AND order_token = :token";
     $verifyStmt = $pdo->prepare($verifySql);
     $verifyStmt->bindParam(':id', $orderId, PDO::PARAM_INT);
     $verifyStmt->bindParam(':token', $orderToken, PDO::PARAM_STR);
     $verifyStmt->execute();
     
-    if (!$verifyStmt->fetch()) {
+    $order = $verifyStmt->fetch(PDO::FETCH_ASSOC);
+    if (!$order) {
         http_response_code(403);
         echo json_encode(['success' => false, 'message' => 'Neplatný token objednávky']);
         exit;
     }
     
+    // Validácia - Kontrola či sú nahraté finálne súbory
+    if (!$order['final_files'] || empty($order['final_files'])) {
+        http_response_code(400);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Nemôžete zaplatiť finálnu čiastku. Admin ešte nenahrali finálne súbory.'
+        ]);
+        exit;
+    }
+    
     // Aktualizácia databázy - zaznamenanie finálnej platby
     $updateSql = "UPDATE orders 
-                  SET final_paid_at = NOW() 
+                  SET final_paid_at = NOW(),
+                      updated_at = NOW()
                   WHERE id = :id";
     
     $updateStmt = $pdo->prepare($updateSql);

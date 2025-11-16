@@ -67,7 +67,7 @@ try {
     // Aktualizácia objednávky na dokončenú
     $updateSql = "UPDATE orders 
                   SET status = 'completed',
-                      datum_aktualizacie = NOW() 
+                      updated_at = NOW() 
                   WHERE id = :order_id";
     
     $updateStmt = $pdo->prepare($updateSql);

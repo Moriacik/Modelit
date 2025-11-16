@@ -23,9 +23,27 @@ Header always set Access-Control-Allow-Headers "Content-Type, Authorization"' > 
 # Set working directory
 WORKDIR /var/www/html
 
+# Create uploads directories if they don't exist FIRST
+RUN mkdir -p /var/www/html/uploads/completed /var/www/html/uploads/orders
+
 # Set proper permissions
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html
+    && chmod -R 755 /var/www/html \
+    && chmod -R 777 /var/www/html/uploads \
+    && chmod -R 777 /var/www/html/uploads/completed \
+    && chmod -R 777 /var/www/html/uploads/orders
+
+# Create uploads directories if they don't exist
+RUN mkdir -p /var/www/html/uploads/completed /var/www/html/uploads/orders \
+    && chown -R www-data:www-data /var/www/html/uploads \
+    && chmod -R 775 /var/www/html/uploads
+
+# Copy entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 # Expose port 80
 EXPOSE 80
+
+# Set entrypoint
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

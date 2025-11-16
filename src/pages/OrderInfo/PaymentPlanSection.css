@@ -60,10 +60,7 @@
 }
 
 .stat-value.paid {
-  background: linear-gradient(135deg, var(--color-text), var(--color-accent-2));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: white;
 }
 
 /* ===================== Payment Plan Grid - New Layout ===================== */
@@ -118,7 +115,7 @@
   left: 0;
   right: 0;
   height: 6px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(76, 175, 80, 0.3);
   border-radius: 3px;
   z-index: 0;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
@@ -132,14 +129,11 @@
   top: 78px;
   left: 0;
   height: 6px;
-  background: linear-gradient(to right,
-    var(--color-accent-1) 0%,
-    var(--color-accent-2) 100%);
+  background: #4CAF50;
   border-radius: 3px;
   z-index: 1;
   width: var(--progress-width, 0%);
   transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  box-shadow: 0 0 15px rgba(245, 130, 66, 0.5);
   pointer-events: none;
 }
 
@@ -156,17 +150,15 @@
 }
 
 .stage-dot.active {
-  background: var(--color-accent-2);
-  border-color: var(--color-accent-2);
-  box-shadow: 0 0 15px rgba(249, 180, 0, 0.6);
+  background: #4CAF50;
+  border-color: #4CAF50;
   width: 24px;
   height: 24px;
 }
 
 .stage-dot.completed {
-  background: var(--color-accent-2);
-  border-color: var(--color-accent-2);
-  box-shadow: 0 0 15px rgba(249, 180, 0, 0.6);
+  background: #4CAF50;
+  border-color: #4CAF50;
 }
 
 .stage-date {
@@ -200,18 +192,31 @@
 }
 
 .stage-btn.deposit {
-  background: var(--color-primary);
+  background: #4CAF50;
   color: white;
 }
 
 .stage-btn.midway {
-  background: var(--color-accent-2);
-  color: var(--color-accent-1);
+  background: #4CAF50;
+  color: white;
 }
 
 .stage-btn.final {
-  background: var(--color-text);
+  background: #4CAF50;
   color: white;
+}
+
+.stage-btn.paid {
+  background: #333333;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: not-allowed;
+}
+
+.stage-btn.disabled {
+  background: #555555;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
+  font-size: 0.75rem;
 }
 
 .stage-btn:hover:not(:disabled) {

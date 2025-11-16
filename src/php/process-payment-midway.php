@@ -52,7 +52,8 @@ try {
     
     // Aktualizácia databázy - zaznamenanie priebežnej platby
     $updateSql = "UPDATE orders 
-                  SET midway_paid_at = NOW() 
+                  SET midway_paid_at = NOW(),
+                      updated_at = NOW()
                   WHERE id = :id";
     
     $updateStmt = $pdo->prepare($updateSql);

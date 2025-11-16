@@ -31,9 +31,9 @@ const PaymentPlanSection = ({ order, onOrderUpdate }) => {
   // Výpočet zaplatených peňazí
   const calculatePaidAmount = () => {
     let total = 0;
-    if (order.deposit_paid_at) total += parseFloat(order.deposit_required) || 0;
-    if (order.midway_paid_at) total += parseFloat(order.midway_required) || 0;
-    if (order.final_paid_at) total += parseFloat(order.final_required) || 0;
+    if (order.deposit_paid_at) total += parseFloat(getDepositAmount()) || 0;
+    if (order.midway_paid_at) total += parseFloat(getMidwayAmount()) || 0;
+    if (order.final_paid_at) total += parseFloat(getFinalAmount()) || 0;
     return total.toFixed(2);
   };
 
@@ -57,6 +57,25 @@ const PaymentPlanSection = ({ order, onOrderUpdate }) => {
   const handlePaymentClick = (stage) => {
     setSelectedStage(stage);
     setShowPaymentModal(true);
+  };
+
+  // Helper funkcie na výpočet milestone cien (ak nie sú v databáze)
+  const getDepositAmount = () => {
+    if (order.deposit_required) return parseFloat(order.deposit_required);
+    if (order.agreed_price) return (parseFloat(order.agreed_price) * 0.3).toFixed(2);
+    return 0;
+  };
+
+  const getMidwayAmount = () => {
+    if (order.midway_required) return parseFloat(order.midway_required);
+    if (order.agreed_price) return (parseFloat(order.agreed_price) * 0.3).toFixed(2);
+    return 0;
+  };
+
+  const getFinalAmount = () => {
+    if (order.final_required) return parseFloat(order.final_required);
+    if (order.agreed_price) return (parseFloat(order.agreed_price) * 0.4).toFixed(2);
+    return 0;
   };
 
   // Handler pre potvrdenie platby
@@ -147,7 +166,7 @@ const PaymentPlanSection = ({ order, onOrderUpdate }) => {
             </div>
             
             {/* Row 3: Amount */}
-            <div className="stage-amount">{order.deposit_required}€</div>
+            <div className="stage-amount">{getDepositAmount()}€</div>
             
             {/* Row 4: Button */}
             {order.deposit_paid_at && (
@@ -180,7 +199,7 @@ const PaymentPlanSection = ({ order, onOrderUpdate }) => {
             </div>
             
             {/* Row 3: Amount */}
-            <div className="stage-amount">{order.midway_required}€</div>
+            <div className="stage-amount">{getMidwayAmount()}€</div>
             
             {/* Row 4: Button */}
             {order.midway_paid_at && (
@@ -213,7 +232,7 @@ const PaymentPlanSection = ({ order, onOrderUpdate }) => {
             </div>
             
             {/* Row 3: Amount */}
-            <div className="stage-amount">{order.final_required}€</div>
+            <div className="stage-amount">{getFinalAmount()}€</div>
             
             {/* Row 4: Button */}
             {order.final_paid_at && (
@@ -222,13 +241,25 @@ const PaymentPlanSection = ({ order, onOrderUpdate }) => {
               </button>
             )}
             {!order.final_paid_at && currentStage === 'final' && (
-              <button 
-                className="stage-btn final"
-                onClick={() => handlePaymentClick('final')}
-                disabled={isProcessing}
-              >
-                {isProcessing ? 'Spracovávam...' : 'Zaplatiť'}
-              </button>
+              <>
+                {!order.final_files || order.final_files.length === 0 ? (
+                  <button 
+                    className="stage-btn final disabled"
+                    disabled
+                    title="Admin ešte nenahrali finálne súbory"
+                  >
+                    Počkajte na finálne súbory
+                  </button>
+                ) : (
+                  <button 
+                    className="stage-btn final"
+                    onClick={() => handlePaymentClick('final')}
+                    disabled={isProcessing}
+                  >
+                    {isProcessing ? 'Spracovávam...' : 'Zaplatiť'}
+                  </button>
+                )}
+              </>
             )}
             {!order.final_paid_at && currentStage !== 'final' && (
               <div className="stage-btn-placeholder"></div>
@@ -252,10 +283,10 @@ const PaymentPlanSection = ({ order, onOrderUpdate }) => {
           stage={selectedStage}
           amount={
             selectedStage === 'deposit'
-              ? order.deposit_required || 0
+              ? getDepositAmount()
               : selectedStage === 'midway'
-              ? order.midway_required || 0
-              : order.final_required || 0
+              ? getMidwayAmount()
+              : getFinalAmount()
           }
           orderToken={order.order_token}
           orderId={order.id}

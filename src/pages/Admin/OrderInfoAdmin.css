@@ -521,6 +521,38 @@
   margin: 0 0 24px 0;
 }
 
+/* Warning Message */
+.warning-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px 20px;
+  background: rgba(249, 180, 0, 0.1);
+  border: 1px solid rgba(249, 180, 0, 0.3);
+  border-radius: 8px;
+  margin-bottom: 24px;
+  animation: slideIn 0.4s ease;
+}
+
+.warning-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.warning-text {
+  color: #f9b400;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.warning-text strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #ffc107;
+}
+
 .upload-area {
   margin-bottom: 24px;
 }

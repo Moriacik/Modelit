@@ -53,7 +53,7 @@ try {
     }
     
     // Aktualizácia statusu
-    $update_stmt = $pdo->prepare("UPDATE orders SET status = ?, datum_aktualizacie = CURRENT_TIMESTAMP WHERE id = ?");
+    $update_stmt = $pdo->prepare("UPDATE orders SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?");
     $result = $update_stmt->execute([$new_status, $order_id]);
     
     if ($result && $update_stmt->rowCount() > 0) {

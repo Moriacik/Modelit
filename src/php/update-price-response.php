@@ -80,7 +80,7 @@ try {
     $updateSql = "UPDATE orders 
                   SET status = :status, 
                       price_status = :price_status, 
-                      datum_aktualizacie = NOW() 
+                      updated_at = NOW() 
                   WHERE order_token = :token";
     
     $updateStmt = $pdo->prepare($updateSql);
@@ -95,7 +95,8 @@ try {
     // Ak bola ponuka prijatá, aktualizujeme stav na "in_progress"
     if ($action === 'accept') {
         $progressSql = "UPDATE orders 
-                        SET status = 'in_progress' 
+                        SET status = 'in_progress',
+                            updated_at = NOW()
                         WHERE order_token = :token";
         
         $progressStmt = $pdo->prepare($progressSql);

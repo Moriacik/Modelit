@@ -42,7 +42,7 @@ try {
     }
     
     // Mark final files as ready
-    $updateSql = "UPDATE orders SET final_ready = TRUE WHERE id = :id";
+    $updateSql = "UPDATE orders SET final_ready = TRUE, updated_at = NOW() WHERE id = :id";
     $updateStmt = $pdo->prepare($updateSql);
     $updateStmt->execute([':id' => $orderId]);
     

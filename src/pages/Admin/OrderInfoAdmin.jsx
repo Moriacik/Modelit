@@ -50,6 +50,28 @@ const OrderInfoAdmin = () => {
       setError('Neplatné ID objednávky');
       setLoading(false);
     }
+
+    // Automatické reloadovanie dát každých 5 sekúnd
+    const interval = setInterval(() => {
+      if (orderId) {
+        fetchOrderDetails();
+      }
+    }, 5000);
+
+    // Reloadovanie dát keď sa okno vráti do focusu
+    const handleFocus = () => {
+      if (orderId) {
+        fetchOrderDetails();
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+
+    // Cleanup
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('focus', handleFocus);
+    };
   }, [orderId]);
 
   // Funkcia pre odoslanie protinávrhov
@@ -222,7 +244,7 @@ const OrderInfoAdmin = () => {
       const result = await response.json();
       
       if (result.success) {
-        setMessage('Objednávka bola označená ako dokončená!');
+        setMessage('Objednávka bola úspešne označená ako dokončená!');
         setOrder(prev => ({ ...prev, status: 'completed' }));
       } else {
         setMessage(result.message || 'Chyba pri označovaní ako dokončená');
@@ -454,7 +476,15 @@ const OrderInfoAdmin = () => {
         {(order.status === 'in_progress' || order.status === 'completed') && priceAgreed && (
           <div className="file-upload-section">
             <h2>Finálne súbory</h2>
-            {order.status === 'in_progress' && (
+            {!order.deposit_paid_at && (
+              <div className="warning-message">
+                <div className="warning-icon">⚠️</div>
+                <div className="warning-text">
+                  <strong>Nemôžete začať pracovať!</strong> Klient ešte nezaplatil zálohu. Čakajte na potvrdenie platby zálohy.
+                </div>
+              </div>
+            )}
+            {order.status === 'in_progress' && order.deposit_paid_at && (
               <div className="upload-area">
                 <label className="upload-label">
                   <input
@@ -467,7 +497,7 @@ const OrderInfoAdmin = () => {
                   <div className="upload-content">
                     <div className="upload-icon"></div>
                     <span>Kliknite pre výber súborov alebo presuňte sem</span>
-                    <small>STL, ZIP, PDF, JPG, PNG súbory</small>
+                    <small>STL, ZIP súbory</small>
                   </div>
                 </label>
               </div>
