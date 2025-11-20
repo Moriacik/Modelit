@@ -1,0 +1,153 @@
+/* ================================================
+   UNIFIED COLOR SYSTEM - All real project colors
+   Only colors actually used in the project
+   ================================================ */
+
+:root {
+  /* ==================== PRIMARY BRAND COLORS ==================== */
+  --color-primary: #08d8c0;
+  --color-primary-hover: #06ad9a;
+  --color-primary-dark: #058274;
+  --color-primary-light: #33dfcf;
+  
+  /* ==================== ACCENT COLORS ==================== */
+  --color-accent-1: #471a15;
+  --color-accent-2: #e55f42;
+  --color-text: #e55f42;
+  
+  /* ==================== LINK & INTERACTION COLORS (Vite defaults) ==================== */
+  --color-link: #646cff;
+  --color-link-hover: #535bf2;
+  --color-link-light-mode: #747bff;
+  --color-button-bg-light: #f9f9f9;
+  --color-text-default: rgba(255, 255, 255, 0.87);
+  --color-bg-default: #242424;
+  --color-bg-button: #1a1a1a;
+  --color-text-light-mode: #213547;
+  --color-bg-light-mode: #ffffff;
+  
+  /* ==================== SEMANTIC / STATUS COLORS ==================== */
+  --color-success: #4CAF50;
+  --color-success-hover: #45a049;
+  --color-success-light: rgba(76, 175, 80, 0.2);
+  --color-success-lighter: rgba(76, 175, 80, 0.1);
+  --color-warning-lighter: rgba(249, 180, 0, 0.1);
+  --color-warning: rgba(249, 180, 0, 0.2);
+  --color-warning-darker: rgba(249, 180, 0, 0.3);
+  --color-error: rgba(229, 95, 66, 0.2);
+  --color-error-darker: rgba(229, 95, 66, 0.8);
+  
+  /* ==================== DARK BACKGROUNDS ==================== */
+  --color-bg-dark-0: #1a1a1a;
+  --color-bg-dark-1: #2a2a2a;
+  --color-bg-dark-2: #3a3a3a;
+  --color-bg-dark-3: #42424a;
+  --color-bg-dark-disabled: #333333;
+  --color-bg-dark-med: rgba(26, 26, 26, 0.95);
+  --color-bg-dark-semi: rgba(26, 26, 26, 0.9);
+  --color-bg-dark-card: rgba(42, 42, 42, 0.9);
+  --color-bg-dark-card-semi: rgba(42, 42, 42, 0.8);
+  --color-bg-dark-accent-light: rgba(26, 26, 26, 0.7);
+  --color-bg-dark-accent-lighter: rgba(26, 26, 26, 0.5);
+  --color-bg-dark-accent-semi: rgba(26, 26, 26, 0.6);
+  --color-bg-dark-review: rgba(30, 30, 30, 0.9);
+  
+  /* ==================== LIGHT BACKGROUNDS ==================== */
+  --color-bg-light: #f7f8fa;
+  
+  /* ==================== GRAYS / NEUTRALS ==================== */
+  --color-gray-900: #111827;
+  --color-gray-800: #1f2937;
+  --color-gray-700: #374151;
+  --color-gray-600: #4b5563;
+  --color-gray-500: #6b7280;
+  --color-gray-muted: #666;
+  --color-gray-400: #9ca3af;
+  --color-gray-300: #d1d5db;
+  --color-gray-200: #e5e7eb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-50: #f9fafb;
+  
+  /* ==================== TEXT COLORS ==================== */
+  --color-text-white: white;
+  --color-text-light: #f9fafb;
+  --color-text-muted: rgba(255, 255, 255, 0.8);
+  --color-text-semi: rgba(255, 255, 255, 0.7);
+  --color-text-lighter: rgba(255, 255, 255, 0.6);
+  --color-text-lighter-semi: rgba(255, 255, 255, 0.95);
+  --color-text-very-light: rgba(255, 255, 255, 0.85);
+  --color-text-faint: rgba(255, 255, 255, 0.5);
+  --color-text-brightest: rgba(255, 255, 255, 0.9);
+  --color-text-dim: rgba(255, 255, 255, 0.56);
+  --color-text-dimmer: rgba(255, 255, 255, 0.4);
+  --color-text-light-bg: #213547;
+  --color-warning-pending: rgba(249, 180, 0, 0.2);
+  --color-warning-pending-text: #f9b400;
+  --color-warning-pending-border: rgba(249, 180, 0, 0.3);
+  --color-text-muted-heavy: rgba(255, 255, 255, 0.75);
+  --color-primary-transparent-super-light: rgba(8, 216, 192, 0.05);
+  --color-primary-border-semi: rgba(8, 216, 192, 0.6);
+  --color-btn-cancel-hover: rgba(255, 255, 255, 0.15);
+  --color-border-semi-hover: rgba(255, 255, 255, 0.3);
+  --color-border-very-light: rgba(255, 255, 255, 0.05);
+  --color-success-light-semi: rgba(76, 175, 80, 0.3);
+  --color-shadow-inset-medium: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  --color-shadow-button: 0 8px 16px rgba(0, 0, 0, 0.3);
+  --color-dot-border: rgba(26, 26, 26, 0.9);
+  --color-dot-bg: rgba(255, 255, 255, 0.9);
+  
+  /* ==================== BORDERS ==================== */
+  --color-border-primary: rgba(8, 216, 192, 0.2);
+  --color-border-primary-light: rgba(8, 216, 192, 0.1);
+  --color-border-primary-light-med: rgba(8, 216, 192, 0.15);
+  --color-border-primary-dark: rgba(8, 216, 192, 0.3);
+  --color-border-accent: rgba(229, 95, 66, 0.2);
+  --color-border-accent-light: rgba(229, 95, 66, 0.1);
+  --color-border-accent-dark: rgba(229, 95, 66, 0.3);
+  --color-border-dark-accent: rgba(71, 26, 21, 0.1);
+  --color-border-light: rgba(255, 255, 255, 0.1);
+  --color-border-lighter: rgba(255, 255, 255, 0.05);
+  --color-border-semi: rgba(255, 255, 255, 0.2);
+  
+  /* ==================== OVERLAYS & SHADOWS ==================== */
+  --color-overlay-dark: rgba(0, 0, 0, 0.7);
+  --color-overlay-light: rgba(0, 0, 0, 0.3);
+  --color-shadow-dark: rgba(0, 0, 0, 0.5);
+  --color-shadow-darker: rgba(0, 0, 0, 0.7);
+  --color-shadow-medium: rgba(0, 0, 0, 0.3);
+  --color-shadow-light: rgba(0, 0, 0, 0.1);
+  
+  /* ==================== BUTTON & INPUT BACKGROUNDS ==================== */
+  --color-bg-input: rgba(26, 26, 26, 0.8);
+  --color-bg-input-semi: rgba(26, 26, 26, 0.9);
+  --color-bg-input-focus: rgba(26, 26, 26, 0.95);
+  --color-bg-disabled: rgba(255, 255, 255, 0.1);
+  --color-bg-disabled-semi: rgba(255, 255, 255, 0.05);
+  
+  /* ==================== GRADIENTS ==================== */
+  --gradient-bg-dark: linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(42, 42, 42, 0.9) 100%);
+  --gradient-radial-primary: radial-gradient(circle at 20% 30%, rgba(8, 216, 192, 0.1) 0%, transparent 50%);
+  --gradient-radial-accent: radial-gradient(circle at 80% 70%, rgba(229, 95, 66, 0.1) 0%, transparent 50%);
+  --gradient-radial-dark: radial-gradient(circle at 40% 80%, rgba(71, 26, 21, 0.1) 0%, transparent 50%);
+  --gradient-confirm: linear-gradient(135deg, rgba(8, 216, 192, 0.2) 0%, rgba(229, 95, 66, 0.2) 100%);
+  --gradient-payment-done: linear-gradient(135deg, rgba(229, 95, 66, 0.15) 0%, rgba(26, 26, 26, 0.8) 100%);
+  
+  /* ==================== PROGRESS & ANIMATIONS ==================== */
+  --color-progress-bg: rgba(76, 175, 80, 0.3);
+  --color-progress-fill: #4CAF50;
+  
+  /* ==================== SPECIAL ==================== */
+  --color-logo-stroke: rgba(255, 107, 0, 0.3);
+  --color-outline-dark: 3px solid rgba(26, 26, 26, 0.9);
+  --color-outline-white: 3px solid rgba(255, 255, 255, 0.9);
+}
+
+/* ==================== LIGHT MODE (if needed) ==================== */
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-text-primary: #111827;
+    --color-text-secondary: #374151;
+    --color-text-tertiary: #6b7280;
+    --color-bg-light: #ffffff;
+  }
+}

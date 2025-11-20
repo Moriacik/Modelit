@@ -143,7 +143,9 @@ const Home = () => {
         <div className="reviews-container">
           <div className="scrolling-logo">
             <div className="logo-track">
-              <div className="logo-item">LOGO</div>
+              <div className="logo-item">
+                <img src="/img/logo.png" alt="Logo" className="logo" />
+              </div>
             </div>
           </div>
           

@@ -7,7 +7,7 @@
   padding: 90px 20px 20px;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(42, 42, 42, 0.9) 100%);
+  background: var(--gradient-bg-dark);
 }
 
 /* Animated Background Elements */
@@ -19,9 +19,9 @@
   right: 0;
   bottom: 0;
   background: 
-    radial-gradient(circle at 20% 30%, rgba(8, 216, 192, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 70%, rgba(229, 95, 66, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 40% 80%, rgba(71, 26, 21, 0.1) 0%, transparent 50%);
+    radial-gradient(circle at 20% 30%, var(--color-primary-transparent-light) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, var(--color-accent-light-transparent) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, var(--color-accent-dark-transparent) 0%, transparent 50%);
   animation: backgroundMove 20s ease-in-out infinite;
   z-index: 0;
 }
@@ -34,9 +34,9 @@
 
 /* Main Container - Home Page Style */
 .login-container {
-  background: rgba(42, 42, 42, 0.9);
+  background: var(--color-bg-dark-card);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(8, 216, 192, 0.2);
+  border: 1px solid var(--color-border-primary);
   border-radius: 16px;
   padding: 48px;
   width: 100%;
@@ -54,15 +54,15 @@
 .login-header h1 {
   font-size: 2.5rem;
   font-weight: 800;
-  color: white;
+  color: var(--color-text-white);
   margin: 0 0 8px 0;
   line-height: 1.2;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  text-shadow: 2px 2px 4px var(--color-shadow-medium);
 }
 
 .login-header p {
   font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-semi);
   margin: 0;
   font-weight: 400;
 }
@@ -76,7 +76,7 @@
 }
 
 .login-card {
-  background: rgba(26, 26, 26, 0.8);
+  background: var(--color-bg-dark-card-semi);
   border: 2px solid transparent;
   border-radius: 12px;
   padding: 24px 16px;
@@ -90,12 +90,12 @@
 .login-card:hover {
   border-color: var(--color-primary);
   transform: translateY(-2px);
-  background: rgba(26, 26, 26, 0.95);
+  background: var(--color-bg-input-focus);
 }
 
 .login-card.active {
   border-color: var(--color-primary);
-  background: rgba(8, 216, 192, 0.1);
+  background: var(--color-border-primary-light);
 }
 
 .card-icon {
@@ -129,13 +129,13 @@
 .login-card h3 {
   font-size: 1.2rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.95);
+  color: var(--color-text-lighter-semi);
   margin: 0 0 8px 0;
 }
 
 .login-card p {
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--color-text-lighter);
   margin: 0;
   line-height: 1.4;
 }
@@ -169,7 +169,7 @@
 .form-header h2 {
   font-size: 1.5rem;
   font-weight: 600;
-  color: white;
+  color: var(--color-text-white);
   margin: 0 0 16px 0;
 }
 
@@ -182,7 +182,7 @@
   display: block;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #ffffff8f;
+  color: var(--color-text-dim);
   margin-bottom: 8px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -195,12 +195,12 @@
 .input-wrapper input {
   width: 100%;
   padding: 16px 20px 16px 52px;
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  border: 2px solid var(--color-border-light);
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 500;
-  background: rgba(26, 26, 26, 0.7);
-  color: white;
+  background: var(--color-bg-dark-accent-light);
+  color: var(--color-text-white);
   transition: all 0.3s ease;
   box-sizing: border-box;
 }
@@ -208,11 +208,11 @@
 .input-wrapper input:focus {
   outline: none;
   border-color: var(--color-primary);
-  background: rgba(26, 26, 26, 0.9);
+  background: var(--color-bg-input-semi);
 }
 
 .input-wrapper input::placeholder {
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--color-text-dimmer);
   font-weight: 400;
 }
 
@@ -245,15 +245,15 @@
 .order-help {
   margin-bottom: 24px;
   padding: 12px 16px;
-  background: rgba(8, 216, 192, 0.1);
-  border: 1px solid rgba(8, 216, 192, 0.3);
+  background: var(--color-border-primary-light);
+  border: 1px solid var(--color-border-primary-dark);
   border-radius: 8px;
 }
 
 .order-help p {
   margin: 0;
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-semi);
   text-align: center;
   line-height: 1.4;
 }
@@ -293,18 +293,18 @@
 }
 
 .admin-btn:hover:not(:disabled) {
-  background: rgba(8, 216, 192, 0.8);
+  background: var(--color-primary-hover);
   color: var(--color-accent-1);
 }
 
 .user-btn:hover:not(:disabled) {
-  background: rgba(8, 216, 192, 0.8);
+  background: var(--color-primary-hover);
   color: var(--color-accent-1);
 }
 
 .login-btn:disabled {
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.3);
+  background: var(--color-bg-disabled);
+  color: var(--color-disabled-text);
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
@@ -331,15 +331,15 @@
 }
 
 .message-container.success {
-  background: rgba(8, 216, 192, 0.1);
-  border: 1px solid rgba(8, 216, 192, 0.3);
+  background: var(--color-border-primary-light);
+  border: 1px solid var(--color-border-primary-dark);
   color: var(--color-primary);
 }
 
 .message-container.error {
-  background: rgba(229, 95, 66, 0.1);
-  border: 1px solid rgba(229, 95, 66, 0.3);
-  color: var(--color-text);
+  background: var(--color-warning-light);
+  border: 1px solid var(--color-warning-border);
+  color: var(--color-warning);
 }
 
 .message-icon {

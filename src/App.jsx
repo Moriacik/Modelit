@@ -8,7 +8,6 @@ import OrderForm from './pages/Orders/OrderForm';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import OrderInfoAdmin from './pages/Admin/OrderInfoAdmin';
 import OrderInfoUser from './pages/OrderInfo/OrderInfoUser';
-import './App.css';
 
 function AppContent() {
   const location = useLocation();

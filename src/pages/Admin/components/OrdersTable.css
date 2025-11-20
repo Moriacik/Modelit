@@ -1,15 +1,8 @@
-/* CSS Custom Properties - Home Page Colors */
-:root {
-  --color-primary: #08d8c0;
-  --color-accent-1: #471a15;
-  --color-text: #e55f42;
-}
-
 /* Orders Table Styles */
 .orders-table-container {
-  background: rgba(42, 42, 42, 0.9);
+  background: var(--color-bg-dark-card);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(8, 216, 192, 0.2);
+  border: 1px solid var(--color-border-primary);
   border-radius: 16px;
   overflow: hidden;
 }
@@ -20,16 +13,16 @@
   align-items: center;
   justify-content: center;
   padding: 60px 20px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--color-text-semi);
 }
 
 .orders-header {
   padding: 25px 30px;
-  border-bottom: 1px solid rgba(8, 216, 192, 0.2);
+  border-bottom: 1px solid var(--color-border-primary);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(26, 26, 26, 0.8);
+  background: var(--color-bg-dark-accent-light);
 }
 
 .orders-title h2 {
@@ -42,7 +35,7 @@
 }
 
 .orders-count {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-lighter);
   font-size: 0.9rem;
   margin-left: 10px;
 }
@@ -55,21 +48,21 @@
 
 .status-filter {
   padding: 8px 12px;
-  border: 1px solid rgba(8, 216, 192, 0.3);
+  border: 1px solid var(--color-border-primary-semi);
   border-radius: 6px;
-  background: rgba(26, 26, 26, 0.8);
+  background: var(--color-bg-dark-accent-light);
   font-size: 0.9rem;
   cursor: pointer;
-  color: white;
+  color: var(--color-text-white);
 }
 
 .status-filter option {
-  color: white;
-  background: rgba(26, 26, 26, 0.9);
+  color: var(--color-text-white);
+  background: var(--color-bg-input-semi);
 }
 
 .error-message {
-  background: rgba(229, 95, 66, 0.1);
+  background: var(--color-warning-light);
   color: var(--color-text);
   padding: 15px 30px;
   border-left: 4px solid var(--color-text);
@@ -88,12 +81,12 @@
 }
 
 .orders-table th {
-  background: rgba(26, 26, 26, 0.8);
+  background: var(--color-bg-dark-accent-light);
   padding: 15px 12px;
   text-align: left;
   font-weight: 600;
   color: var(--color-primary);
-  border-bottom: 2px solid rgba(8, 216, 192, 0.3);
+  border-bottom: 2px solid var(--color-border-primary-semi);
   white-space: nowrap;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -101,13 +94,13 @@
 
 .orders-table td {
   padding: 15px 12px;
-  border-bottom: 1px solid rgba(8, 216, 192, 0.1);
+  border-bottom: 1px solid var(--color-border-primary-super-light);
   vertical-align: middle;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-lighter-semi);
 }
 
 .order-row:hover {
-  background: rgba(8, 216, 192, 0.05);
+  background: var(--color-primary-transparent-super-light);
 }
 
 .order-token strong {
@@ -117,7 +110,7 @@
 
 .customer-name {
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.95);
+  color: var(--color-text-lighter-semi);
 }
 
 .customer-email a {
@@ -137,7 +130,7 @@
 
 .order-deadline,
 .order-created {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-lighter);
   font-size: 0.85rem;
 }
 
@@ -145,7 +138,7 @@
   display: inline-block;
   padding: 4px 10px;
   border-radius: 20px;
-  color: white;
+  color: var(--color-text-white);
   font-size: 0.8rem;
   font-weight: 500;
   text-transform: uppercase;
@@ -176,14 +169,14 @@
 }
 
 .manage-btn:hover {
-  background: rgba(8, 216, 192, 0.8);
+  background: var(--color-primary-hover);
   transform: translateY(-1px);
 }
 
 .no-orders {
   text-align: center;
   padding: 60px 20px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-text-lighter);
 }
 
 /* Responsive Design */
