@@ -69,22 +69,62 @@ const Home = () => {
   }, [statsAnimated]);
   return (
     <div className="home-page">
-      <section className="hero">
-        {/* Ľavý kontajner - text v hornej časti */}
-        <div className="hero-left">
-          <h1>Moderné Riešenia<br />Pre Váš Biznis</h1>
+      <section className="hero-new">
+        {/* Ľavá strana - 3 časti */}
+        <div className="hero-new-left">
+          {/* 1. Odstavec textu na vrchu */}
+          <div className="hero-left-top">
+            <div className="hero-top-divider"></div>
+          </div>
+          
+          {/* 2. Logo uprostred */}
+          <div className="hero-left-middle">
+            <p className="hero-top-text">DREAMS ARE MADE OF</p>
+            <img src="/img/logo.png" alt="Modelit" className="hero-logo" />
+          </div>
+          
+          {/* 3. Text o modely naspod */}
+          <div className="hero-left-bottom">
+            <p className="hero-model-info">Geometrické Bluebrint • CAD/CAM • Parametrické Modely</p>
+          </div>
         </div>
         
-        {/* Pravý kontajner - text v dolnej časti */}
-        <div className="hero-right">
-          <p className="hero-description">Vytvárame intuitívne webové aplikácie a objednávkové systémy, ktoré zjednodušujú podnikové procesy. Naše riešenia kombinujú moderný dizajn s pokročilou funkcionalitou, aby sme vašim klientom poskytli najlepšiu možnú používateľskú skúsenosť.</p>
+        {/* Centrum - Obrázok modelu */}
+        <div className="hero-new-center">
+          <div className="hero-model-container">
+            <img src="/img/landing-page.png" alt="3D Model" className="hero-model" />
+          </div>
+        </div>
+        
+        {/* Pravá strana - Body points */}
+        <div className="hero-new-right">
+          <div className="hero-features">
+            <div className="feature-item">
+              <span className="feature-number">01</span>
+              <div className="feature-content">
+                <h3>PRECISION ENGINEERING</h3>
+                <p>CAD/CAM optimalizácia s parametrickými modelmi</p>
+              </div>
+            </div>
+            
+            <div className="feature-item">
+              <span className="feature-number">02</span>
+              <div className="feature-content">
+                <h3>RAPID PROTOTYPING</h3>
+                <p>Modelovanie a 3D tisk s CNC frézovanie</p>
+              </div>
+            </div>
+            
+            <div className="feature-item">
+              <span className="feature-number">03</span>
+              <div className="feature-content">
+                <h3>REVERSE ENGINEERING</h3>
+                <p>Skenovanie digitálnych modelov s highest detail</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
-
-      {/* Right Divider with Image */}
-      <div className="section-divider">
-        <img src="/img/divider-diamond.png" alt="" className="divider-image" />
-      </div>
 
       {/* About & Services Section */}
       <section className="about-services">
