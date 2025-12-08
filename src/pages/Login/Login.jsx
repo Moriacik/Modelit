@@ -15,10 +15,27 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
+  const validateAdminInput = () => {
+    if (!adminData.username.trim()) {
+      setMessage('Meno používateľa je povinné');
+      return false;
+    }
+    if (!adminData.password) {
+      setMessage('Heslo je povinné');
+      return false;
+    }
+    return true;
+  };
+
   const handleAdminLogin = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setMessage('');
+
+    if (!validateAdminInput()) {
+      return;
+    }
+
+    setLoading(true);
 
     try {
       const response = await fetch('/app/src/php/admin-login.php', {
@@ -49,10 +66,27 @@ function Login() {
     }
   };
 
+  const validateUserInput = () => {
+    if (!userData.orderCode.trim()) {
+      setMessage('Kód objednávky je povinný');
+      return false;
+    }
+    if (userData.orderCode.length == 5) {
+      setMessage('Kód objednávky musí mať presne 17 znakov');
+      return false;
+    }
+    return true;
+  };
+
   const handleUserLogin = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setMessage('');
+
+    if (!validateUserInput()) {
+      return;
+    }
+
+    setLoading(true);
 
     try {
       const response = await fetch('/app/src/php/user-login.php', {
