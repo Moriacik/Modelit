@@ -677,13 +677,16 @@
 .order-actions {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 16px;
   padding-top: 24px;
   border-top: 1px solid var(--color-border-light);
+  position: relative;
 }
 
 .cancel-btn,
-.back-btn {
+.back-btn,
+.delete-btn {
   padding: 12px 24px;
   border: 1px solid var(--color-border-semi);
   border-radius: 8px;
@@ -706,6 +709,12 @@
   color: var(--color-text-semi);
 }
 
+.delete-btn {
+  background: var(--color-error);
+  color: var(--color-text-white);
+  border-color: var(--color-error);
+}
+
 .cancel-btn:hover:not(:disabled) {
   background: var(--color-error-darker);
   transform: translateY(-2px);
@@ -716,6 +725,12 @@
   border-color: var(--color-primary);
   color: var(--color-primary);
   transform: translateY(-2px);
+}
+
+.delete-btn:hover:not(:disabled) {
+  background: #c62828;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
 }
 
 /* Messages */

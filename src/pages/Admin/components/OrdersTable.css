@@ -28,10 +28,10 @@
 .orders-title h2 {
   margin: 0;
   color: var(--color-primary);
-  font-size: 1.5rem;
+  font-size: 1.05rem;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  text-transform: none;
+  letter-spacing: 0.1px;
 }
 
 .orders-count {

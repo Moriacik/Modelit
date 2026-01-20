@@ -81,8 +81,7 @@ function OrdersTable() {
     <div className="orders-table-container">
       <div className="orders-header">
         <div className="orders-title">
-          <h2>Správa objednávok</h2>
-          <span className="orders-count">{filteredOrders.length} objednávok</span>
+          <h2>Počet objednávok: {filteredOrders.length}</h2>
         </div>
         
         <div className="orders-controls">

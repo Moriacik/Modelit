@@ -17,7 +17,7 @@ Pozor! Navrhované riešenie musíte aj realizovať. Nie je možné vypracovať 
 o	Uloženie projektu v GIT
 o	Aspoň 10 vlastných CSS pravidiel (externe pripojené)
 o	Implementované základne rozloženie webu (layout), responzívny dizajn
-o	 
+o	Implementované všetky CRUD operácie na strane servera, včítane grafického rozhrania k nim
 o	Kontrola formulárových prvkov na strane klienta
 o	Kontrola formulárových prvkov na strane servera
 o	Netriviálny JavaScript

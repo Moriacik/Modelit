@@ -5,7 +5,6 @@ import './AdminDashboard.css';
 
 function AdminDashboard() {
   const [adminInfo, setAdminInfo] = useState(null);
-  const [activeTab, setActiveTab] = useState('orders');
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
@@ -91,47 +90,9 @@ function AdminDashboard() {
         </div>
       </header>
 
-      {/* Navigation Tabs */}
-      <nav className="admin-nav">
-        <div className="nav-tabs">
-          <button 
-            className={`nav-tab ${activeTab === 'orders' ? 'active' : ''}`}
-            onClick={() => setActiveTab('orders')}
-          >
-            📋 Objednávky
-          </button>
-          <button 
-            className={`nav-tab ${activeTab === 'stats' ? 'active' : ''}`}
-            onClick={() => setActiveTab('stats')}
-          >
-            📊 Štatistiky
-          </button>
-          <button 
-            className={`nav-tab ${activeTab === 'settings' ? 'active' : ''}`}
-            onClick={() => setActiveTab('settings')}
-          >
-            ⚙️ Nastavenia
-          </button>
-        </div>
-      </nav>
-
       {/* Main Content */}
       <main className="admin-main">
-        {activeTab === 'orders' && <OrdersTable />}
-        
-        {activeTab === 'stats' && (
-          <div className="admin-section">
-            <h2>Štatistiky</h2>
-            <p>Štatistiky objednávok budú dostupné čoskoro...</p>
-          </div>
-        )}
-        
-        {activeTab === 'settings' && (
-          <div className="admin-section">
-            <h2>Nastavenia</h2>
-            <p>Nastavenia admin panelu budú dostupné čoskoro...</p>
-          </div>
-        )}
+        <OrdersTable />
       </main>
     </div>
   );

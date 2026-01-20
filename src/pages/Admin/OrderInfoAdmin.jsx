@@ -187,6 +187,44 @@ const OrderInfoAdmin = () => {
     }
   };
 
+  // Funkcia pre vymazanie dokončenej objednávky
+  const handleDeleteOrder = async () => {
+    if (!window.confirm('Naozaj chcete vymazať túto objednávku? Táto akcia je nenávratná a všetky dáta budú natrvalo odstránené.')) {
+      return;
+    }
+
+    setActionLoading(true);
+    setMessage('');
+
+    try {
+      const response = await fetch('/app/src/php/delete-order.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          order_id: orderId
+        })
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        setMessage('Objednávka bola vymazaná.');
+        setTimeout(() => {
+          navigate('/admin');
+        }, 1500);
+      } else {
+        setMessage(result.message || 'Chyba pri mazaní objednávky');
+      }
+    } catch (error) {
+      console.error('Error deleting order:', error);
+      setMessage('Chyba pri komunikácii so serverom');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   // Funkcia pre upload finálnych súborov
   const handleFileUpload = async (event) => {
     const files = event.target.files;
@@ -309,6 +347,7 @@ const OrderInfoAdmin = () => {
   const lastNegotiation = negotiations[negotiations.length - 1];
   const canMakeCounterOffer = order.price_status !== 'agreed' && order.status !== 'completed' && order.status !== 'cancelled';
   const priceAgreed = order.price_status === 'agreed';
+  const showCancelButton = (canMakeCounterOffer && !priceAgreed) || order.status === 'completed' || order.status === 'cancelled';
   
 
 
@@ -539,10 +578,10 @@ const OrderInfoAdmin = () => {
 
         {/* Order Actions */}
         <div className="order-actions">
-          {canMakeCounterOffer && !priceAgreed && (
+          {showCancelButton && (
             <button 
               onClick={handleCancelOrder}
-              disabled={actionLoading}
+              disabled={actionLoading || order.status === 'completed' || order.status === 'cancelled'}
               className="cancel-btn"
             >
               Zrušiť objednávku
@@ -552,6 +591,16 @@ const OrderInfoAdmin = () => {
           <button onClick={() => navigate('/admin')} className="back-btn">
             Späť na dashboard
           </button>
+
+          {order.status === 'completed' && (
+            <button 
+              onClick={handleDeleteOrder}
+              disabled={actionLoading}
+              className="delete-btn"
+            >
+              Zmazať
+            </button>
+          )}
         </div>
 
         {/* Messages */}

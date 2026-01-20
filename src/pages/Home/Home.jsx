@@ -79,13 +79,13 @@ const Home = () => {
           
           {/* 2. Logo uprostred */}
           <div className="hero-left-middle">
-            <p className="hero-top-text">DREAMS ARE MADE OF</p>
+            <p className="hero-top-text">Čas uskutočniť vaše nápady</p>
             <img src="/img/logo.png" alt="Modelit" className="hero-logo" />
           </div>
           
           {/* 3. Text o modely naspod */}
           <div className="hero-left-bottom">
-            <p className="hero-model-info">Geometrické Bluebrint • CAD/CAM • Parametrické Modely</p>
+            <p className="hero-model-info">3D návrhy • CAD/CAM • Parametrické modely</p>
           </div>
         </div>
         
@@ -102,24 +102,24 @@ const Home = () => {
             <div className="feature-item">
               <span className="feature-number">01</span>
               <div className="feature-content">
-                <h3>PRECISION ENGINEERING</h3>
-                <p>CAD/CAM optimalizácia s parametrickými modelmi</p>
+                <h3>Všetko pod kontrolou</h3>
+                <p>Optimalizujeme CAD/CAM modely na mieru s parametrickým riadením.</p>
               </div>
             </div>
             
             <div className="feature-item">
               <span className="feature-number">02</span>
               <div className="feature-content">
-                <h3>RAPID PROTOTYPING</h3>
-                <p>Modelovanie a 3D tisk s CNC frézovanie</p>
+                <h3>Buďte pánmi času</h3>
+                <p>Zohľadňujeme vaše potreby a zabezpečíme dodanie včas a podľa plánu.</p>
               </div>
             </div>
             
             <div className="feature-item">
               <span className="feature-number">03</span>
               <div className="feature-content">
-                <h3>REVERSE ENGINEERING</h3>
-                <p>Skenovanie digitálnych modelov s highest detail</p>
+                <h3>Presný je naša výsada</h3>
+                <p>Naše modely sú vytvorené s dôrazom na každý detail a vysokú kvalitu.</p>
               </div>
             </div>
           </div>
