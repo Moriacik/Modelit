@@ -1,24 +1,21 @@
 # Modelit - Systém na správu objednávok 3D modelov
 
-Aplikácia umožňuje zákazníkom zadávať objednávky, komunikovať s administrátorom o cene a sledovať stav vyhotovenia. Administrátor spravuje objednávky, cenové vyjednávania, platby a vyrobu/odovzdanie produktu.
+Web aplikácia na správu objednávok 3D modelov. Zákazníci zadávajú objednávky, komunikujú s administrátorom o cene a sledujú stav vyhotovenia. Administrátor spravuje všetky objednávky, cenové vyjednávania a platby.
 
 ---
 
 ## 🎯 Hlavné funkcie
 
 ✅ **Zákazníci:**
-- Vytvorenie objednávky s opisom práce a referenčnými súbormi
+- Vytvorenie objednávky s opisom práce
 - Prihlásenie a sledovanie objednávky
-- Cenové vyjednávania
-- Platby v 3 etapách (30% - 40% - 30%)
+- Schvalenie ceny objednávky
 - Stiahnutie hotových súborov
 
 ✅ **Administrátori:**
 - Správa všetkých objednávok
-- Cenové vyjednávania s zákazníkmi
-- Vedenie záznamov o platbách
+- Stanovenie ceny objednávky
 - Upload finálnych súborov
-- Oznamovanie stavu objednávky
 
 ✅ **Technológie:**
 - Frontend: React + Vite
@@ -28,14 +25,10 @@ Aplikácia umožňuje zákazníkom zadávať objednávky, komunikovať s adminis
 ---
 
 ## 📋 Požiadavky
-
-### Lokálne spustenie
-- **Node.js** (v18 alebo novšie)
-- **PHP** (v8.2 alebo novšie)
-- **MySQL** (v8.0 alebo novšie)
-- **Git**
-
-### Docker
++)
+- **PHP** (v8.2+)
+- **MySQL** (v8.0+)
+- **Docker + Docker Compose** (odporúčané
 - **Docker**
 - **Docker Compose** (zvyčajne súčasť Docker Desktop)
 
@@ -77,12 +70,12 @@ MYSQL_DATABASE=modelit_db
 MYSQL_USER=modelit_user
 MYSQL_PASSWORD=$(openssl rand -base64 16)
 DB_HOST=db
-DB_NAME=modelit_db
-DB_USER=modelit_user
-DB_PASS=$(openssl rand -base64 16)
-NODE_ENV=production
-EOF
-
+DB_NAME=modelitvaii_semestralka
+MYSQL_USER=vaii_user
+MYSQL_PASSWORD=$(openssl rand -base64 16)
+DB_HOST=db
+DB_NAME=vaii_semestralka
+DB_USER=vaii
 # Spustite Docker v produkcii
 docker-compose up -d
 
@@ -176,26 +169,42 @@ docker-compose exec db mysqldump -u modelit_user -p modelit_db > backup_$(date +
 ```
 Modelit/
 ├── src/
-│   ├── pages/              # React stránky
-│   │   ├── Home/           # Domovská stránka
-│   │   ├── Login/          # Prihlasovacia stránka
-│   │   ├── Orders/         # Formulár na vytvorenie objednávky
-│   │   ├── OrderInfo/      # Detail objednávky (zákazník)
-│   │   └── Admin/          # Admin panel
-│   ├── components/         # Opakovane použiteľné komponenty
-│   ├── php/                # Backend API endpoints
-│   │   ├── config.php      # Databázová konfigurácia
-│   │   ├── create-order.php
-│   │   ├── get-orders.php
-│   │   └── ...
-│   └── styles/             # CSS štýly
-├── database/
-│   └── init/
-│       └── init.sql        # SQL migrácia (tabuľky + dáta)
-├── docker-compose.yml      # Docker konfigurácia
-├── Dockerfile              # PHP + Apache kontajner
-├── package.json            # Node.js závislosť
-└── README.md              # Tento súbor
+│   ├── pages/                    # React/CSS
+│   │   ├── Home/                 # Domovská stránka + Reviews
+│   │   ├── Login/                # Prihlasovacia stránka (Admin + User)
+│   │   ├── Orders/               # OrderForm.jsx - vytvorenie objednávky
+│   │   ├── OrderInfo/            # OrderInfoUser.jsx - detail zákazníka
+│   │   ├── Admin/                # AdminDashboard.jsx + OrderInfoAdmin.jsx
+│   │   │   └── components/       # OrdersTable.jsx - admin tabuľka objednávok
+│   │   └── ...(ďalšie stránky)
+│   ├── components/               # Header/Footer
+│   │   ├── Header/
+│   │   └── Footer/
+│   ├── services/                 # Frontend API Services
+│   │   └── api.js
+│   ├── php/                      # PHP
+│   │   ├── Controllers/
+│   │   │   ├── AuthController.php       # Login/Logout
+│   │   │   ├── OrderController.php      # Order CRUD
+│   │   │   ├── AdminController.php      # Admin operations
+│   │   │   └── ReviewController.php     # Reviews
+│   │   ├── Models/
+│   │   │   ├── User.php          # User authentication
+│   │   │   ├── Order.php         # Order operations
+│   │   │   ├── OrderFile.php     # File management
+│   │   │   └── Review.php        # Reviews
+│   │   ├── index.php             # API Router
+│   │   └── config.php            # DB konfigurácia
+│   ├── styles/                   # CSS Styles
+│   │   ├── global.css
+│   │   └── colors.css
+│   ├── App.jsx                   # Frontend Router
+│   └── main.jsx                  # React entry point
+├── docker-compose.yml            # Docker + MySQL
+├── Dockerfile                    # PHP 8.2 + Apache image
+├── package.json                  # Node.js dependencies
+├── vite.config.js               # Vite bundler config
+└── README.md                    # Dokumentácia
 ```
 
 ---
@@ -204,12 +213,12 @@ Modelit/
 
 | Časť | Technológia | Verzia |
 |------|------------|--------|
-| Frontend | React | 19.x |
-| Bundler | Vite | 7.x |
-| Routing | React Router | 7.x |
+| Frontend | React | 19.1.1 |
+| Bundler | Vite | 7.1.7 |
+| Routing | React Router | 7.9.3 |
 | Backend | PHP | 8.2 |
 | Databáza | MySQL | 8.0 |
-| Server | Docker + Nginx | Latest |
+| Štruktúra | MVC (4 Controllers, 4 Models) | Custom |
 
 ---
 
@@ -225,21 +234,19 @@ docker-compose exec db mysql -u root -p modelit_db
 UPDATE users SET password = PASSWORD('NOVE_SILNE_HESLO') WHERE username = 'admin';
 ```
 
-| Typ | Meno | Heslo | Úloha |
-|-----|------|-------|-------|
-| Admin | `admin` | **ZMEŇTE V PRODUKCII!** | Správa objednávok |
-| Zákazník | Kód objednávky | Bez hesla | Sledovanie objednávky |
-
 ---
 
 ## 📝 Ako používať
 
 ### Zákazníci:
-1. Prejdite na `/objednavka` a vytvorte objednávku
-2. Dostanete **kód objednávky** (formát: `ORD-2026-XXXXXX`)
+1. Prejdite na `/objednavka` a vytvorte objednávku s popisom práce
+2. Dostanete **kód objednávky** (formát: `MODELIT-XXXXXXXXXX`, napr. `MODELIT-ABC123XYZ`)
 3. Na `/login` sa prihlaste s kódom a sledujte stav
 
 ### Administrátori:
-1. Na `/login` sa prihlaste ako **admin** / **admin123** (zmeniť v produkcii!)
-2. V admin paneli spravujte objednávky, ceny a platby
-3. Uploadujte finálne súbory keď je všetko zaplatené
+1. Na `/login` sa prihlaste s admin účtom (username + password)
+2. V admin paneli (`/admin`) spravujete:
+   - Zoznam objednávok (filtrovanie podľa statusu)
+   - Detaily každej objednávky (popis, deadline, súbory)
+   - Upload finálnych súborov po zaplatení
+3. Systém automaticky sleduje stav objednávky

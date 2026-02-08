@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { getPublishedReviews } from '@/services/api';
 import './Home.css';
 
 const Home = () => {
@@ -6,6 +7,8 @@ const Home = () => {
   const [customerCount, setCustomerCount] = useState(0);
   const [orderCount, setOrderCount] = useState(0);
   const [experienceCount, setExperienceCount] = useState(0);
+  const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
   const statsRef = useRef(null);
   // Animácia čísiel
   const animateNumber = (start, end, duration, setter) => {
@@ -67,6 +70,29 @@ const Home = () => {
 
     return () => window.removeEventListener('scroll', handleScroll);
   }, [statsAnimated]);
+
+  // Načítať recenzie
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const result = await getPublishedReviews();
+        console.log('Reviews result:', result);
+        if (result.success) {
+          console.log('Setting reviews:', result.data);
+          setReviews(result.data || []);
+        } else {
+          console.error('API error:', result.message);
+        }
+      } catch (err) {
+        console.error('Error fetching reviews:', err);
+      } finally {
+        setReviewsLoading(false);
+      }
+    };
+
+    fetchReviews();
+  }, []);
+
   return (
     <div className="home-page">
       <section className="hero-new">
@@ -190,60 +216,30 @@ const Home = () => {
           </div>
           
           <div className="reviews-grid">
-            <div className="review-column">
-              <div className="review-card" style={{marginLeft: '12%'}}>
-                <p>"Výborná kvalita služieb a rýchla komunikácia. Náš projekt bol dokončený presne podľa požiadaviek a v stanovenom termíne."</p>
-                <div className="review-author">
-                  <strong>Peter Novák</strong>
-                  <span>CEO, TechStart Solutions</span>
-                </div>
+            {reviewsLoading ? (
+              <div style={{gridColumn: '1 / -1', textAlign: 'center', padding: '40px 20px', color: '#999'}}>
+                Načítavam recenzie...
               </div>
-            </div>
-            
-            <div className="review-column">
-              <div className="review-card" style={{marginLeft: '68%'}}>
-                <p>"Profesionálny prístup a skvelé výsledky. Určite budeme spolupracovať aj v budúcnosti. Systém je intuitívny a efektívny."</p>
-                <div className="review-author">
-                  <strong>Mária Kováčová</strong>
-                  <span>Marketing Manager, InnovateTech</span>
+            ) : reviews && reviews.length > 0 ? (
+              reviews.map((review, index) => (
+                <div key={review.id} className="review-column" style={{marginLeft: `${(index % 2 === 0 ? 12 : 68) + (index % 3 * 10)}%`}}>
+                  <div className="review-card">
+                    <p>"{review.text}"</p>
+                    <div className="review-author">
+                      <strong>{review.customer_name}</strong>
+                      <span>{review.customer_role}</span>
+                    </div>
+                  </div>
                 </div>
+              ))
+            ) : (
+              <div style={{gridColumn: '1 / -1', textAlign: 'center', padding: '40px 20px', color: '#999'}}>
+                Zatiaľ nie sú žiadne recenzie
               </div>
-            </div>
-            
-            <div className="review-column">
-              <div className="review-card" style={{marginLeft: '5%'}}>
-                <p>"Najlepší order management systém, aký sme kedy používali. Všetko funguje bez problémov a podpora je fantastická."</p>
-                <div className="review-author">
-                  <strong>Jakub Horváth</strong>
-                  <span>Operations Director, LogiFlow</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="review-column">
-              <div className="review-card" style={{marginLeft: '25%'}}>
-                <p>"Rýchle dodanie a perfektná podpora. Odporúčam všetkým, ktorí hľadajú kvalitné riešenia pre svoj business."</p>
-                <div className="review-author">
-                  <strong>Anna Svobodová</strong>
-                  <span>Project Manager, DigitalCorp</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="review-column">
-              <div className="review-card" style={{marginLeft: '75%'}}>
-                <p>"Excelenté riešenie pre naše potreby. Implementácia bola hladká a výsledky prekročili očakávania celého tímu."</p>
-                <div className="review-author">
-                  <strong>Tomáš Krejčí</strong>
-                  <span>IT Director, ModernSystems</span>
-                </div>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </section>
-
-      {/* Right Divider with Image */}
       <div className="section-divider">
         <img src="/img/divider-right.png" alt="" className="divider-image" />
       </div>

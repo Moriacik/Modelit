@@ -1,0 +1,47 @@
+1. aplikačná logika oddelená od prezentačnej vrstvy
+2. min. 5 dynamických stránok
+3. min. 50 vlastných riadkov kódu v Javascripte (Typescript, Dart, ...)
+4. min. 20 vlastných CSS pravidiel (mimo Bootstrap a pod.)
+5. min. 3 zmysluplné DB entity, všetky použité v aplikácii (tabuľka používateľov, napr. entita users sa do týchto entít nezapočítava)
+6. aspoň jeden 1:N alebo M:N vzťah medzi DB entitami
+7. implementované všetky CRUD (čítanie, vytváranie, úprava a mazanie dát) operácie nad dvomi entitami
+8. aplikácia musí obsahovať časť, do ktorej je nutné sa prihlásiť
+9. k aplikácii je nutné priložiť návod na inštaláciu (napr. súbor README.md)
+
+Aplikácia
+Výsledná internetová aplikácia je rozdelená na klientsku a serverovú časť, ktoré musia spĺňať nasledovné požiadavky:
+Všeobecné požiadavky
+10. Zdrojový kód musí byť správne štruktúrovaný, členený a prehľadne formátovaný. Dôvodom na zrážku bodov je neprehľadný, zle členený alebo často sa opakujúci kód.
+11. Pri vytváraní by ste mali dodržiavať postupy objektovo orientovaného programovania (OOP) a používať MVC (prípadne iné architektúry ako MVVM, MVP, ...).
+12. Hodnotí sa kód, ktorý je vytvorený študentom. Pokiaľ je v aplikácii použitý framework, CMS alebo iné hotové riešenie, bude hodnotená miera modifikácie alebo implementácie, ktorú študent sám vytvoril. V odovzdávanej aplikácii však musí byť v dostatočnej miere obsiahnutá aj vlastná tvorivá činnosť študenta. Ak chcete odovzdať semestrálnu prácu tohto typu, je vhodné svoj zámer vopred prekonzultovať s vyučujúcim.
+13. Aplikácia musí dodržať tieto zásady bezpečnosti:
+    a. Kontrola vstupov, kontrolujúca nielen dátový typ, ale aj platnú hodnotu na strane servera aj klienta.
+    b. Ošetrenie dopytov na DB voči útokom SQLInjection.
+    c. Aplikácia musí obsahovať časť prístupnú až po prihlásení používateľa (t.j. musí obsahovať prihlasovací formulár).
+    d. Heslá užívateľov nesmú byť uložené ako obyčajný text.
+    e. Ak je aplikácia typu SPA, koncové body (endpoints) musia byť zabezpečené tak, aby nebolo možné na ne pristúpiť neautorizovaným spôsobom.
+14. Klientska strana musí so stranou servera komunikovať asynchrónne (AJAX), min. dvoma spôsobmi z nasledujúceho zoznamu:
+    a. odosielanie formulárov
+    b. editovanie záznamu priamo v tabuľke (in-place editing)
+    c. prihlasovanie do aplikácie
+    d. filtrovanie záznamov tabuľke
+    e. načítavanie obsahu tabuľky
+    f. stránkovanie obsahu
+    g. iné netriviálne volania, podľa vlastného výberu
+
+Server – databáza
+15. Musí obsahovať min. 3 entity (databázové tabuľky). Do počtu sa nezarátava asociačná tabuľka (dekompozícia vzťahu M:N) a frameworkom / knižnicou vygenerované tabuľky a ani tabuľka používateľov.
+16. Databáza by mala spĺňať normalizáciu; t.j. žiadne duplicity dát a nezmyselné tabuľky, ktoré sú vytvorené len do počtu. Príklady nevhodného použitia napr.:
+    a. Pre každého užívateľa sa generuje vlastná tabuľka – stačí jedna tabuľka, používateľov rozdeľuje ich ID atribút
+    b. Každá rola užívateľa má vlastnú tabuľku – do tabuľky používateľov stačí pridať stĺpec, ktorý rolu určuje
+
+Server – aplikačná logika
+17. Aplikácia vykonáva nad DB všetky operácie – vkladanie, čítanie, mazanie a upravovanie dát.
+18. Aplikácia využíva všetky entity v DB. Nepoužívaná entita sa nezarátava do počtu povinných entít.
+
+Klient – aplikačná logika + GUI
+19. Aplikácia musí obsahovať min. 5 rôznych podstránok s dynamickým obsahom.
+20. Aplikácia musí mať responzívny dizajn, t.j. jej zobrazenie sa musí vhodne prispôsobiť rozlíšeniu displeja, na ktorom bude zobrazovaná.
+21. Vzhľad a formát aplikácie musí definovať minimálne 20 CSS pravidiel.
+22. Je potrebné vypracovať vlastný klientsky skript o veľkosti minimálne 50 riadkov. Skript musí byť zmysluplný a používaný v aplikácii.
+23. Používateľské rozhranie musí spĺňať pokročilé funkcie pre správu dát v aplikácii. Nesprávne riešenie je napr. mazanie záznamu pomocou manuálnom zadaní ID záznamu a pod.

@@ -27,7 +27,7 @@ function AppContent() {
         <Route path="/login" element={<Login />} />
         <Route path="/objednavka" element={<OrderForm />} />
         <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/order/:orderId" element={<OrderInfoAdmin />} />
+        <Route path="/admin/orders/:id" element={<OrderInfoAdmin />} />
         <Route path="/order-detail/:orderToken" element={<OrderInfoUser />} />
       </Routes>
       <Footer />

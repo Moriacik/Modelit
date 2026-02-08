@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { adminGetOrders } from '@/services/api';
 import './OrdersTable.css';
 
 function OrdersTable() {
@@ -16,11 +17,10 @@ function OrdersTable() {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/app/src/php/get-orders.php');
-      const result = await response.json();
+      const result = await adminGetOrders();
       
       if (result.success) {
-        setOrders(result.orders);
+        setOrders(result.data.orders || []);
       } else {
         setError(result.message || 'Chyba pri načítaní objednávok');
       }
@@ -34,22 +34,18 @@ function OrdersTable() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'nova': return '#f39c12';
-      case 'pending': return '#9b59b6';
-      case 'price_negotiation': return '#e67e22';
+      case 'new': return '#f39c12';
       case 'in_progress': return '#3498db';
       case 'completed': return '#27ae60';
-      case 'cancelled': return '#e74c3c';
       default: return '#95a5a6';
     }
   };
 
   const getStatusText = (status) => {
     switch (status) {
-      case 'nova': return 'Nová';
-      case 'pending': return 'Čakajúca';
-      case 'price_negotiation': return 'Vyjednávanie';
+      case 'new': return 'Nová';
       case 'in_progress': return 'V procese';
+      case 'waiting_approval': return 'Čaka schválenie';
       case 'completed': return 'Dokončená';
       case 'cancelled': return 'Zrušená';
       default: return status;
@@ -57,7 +53,7 @@ function OrdersTable() {
   };
 
   const formatPrice = (price) => {
-    return price ? `${parseFloat(price).toFixed(2)} €` : 'Nezadané';
+    return price ? `${parseFloat(price).toFixed(2)} €` : '-';
   };
 
   const formatDate = (dateString) => {
@@ -91,12 +87,9 @@ function OrdersTable() {
             className="status-filter"
           >
             <option value="all">Všetky statusy</option>
-            <option value="nova">Nové</option>
-            <option value="pending">Čakajúce</option>
-            <option value="price_negotiation">Vyjednávanie</option>
+            <option value="new">Nové</option>
             <option value="in_progress">V procese</option>
             <option value="completed">Dokončené</option>
-            <option value="cancelled">Zrušené</option>
           </select>
         </div>
       </div>
@@ -111,13 +104,11 @@ function OrdersTable() {
         <table className="orders-table">
           <thead>
             <tr>
-              <th>Číslo objednávky</th>
+              <th>Token</th>
               <th>Zákazník</th>
-              <th>Email</th>
-              <th>Cena</th>
-              <th>Deadline</th>
               <th>Status</th>
-              <th>Vytvorené</th>
+              <th>Deadline</th>
+              <th>Cena</th>
               <th>Akcie</th>
             </tr>
           </thead>
@@ -127,14 +118,7 @@ function OrdersTable() {
                 <td className="order-token">
                   <strong>{order.order_token}</strong>
                 </td>
-                <td className="customer-name">{order.meno}</td>
-                <td className="customer-email">
-                  <a href={`mailto:${order.email}`}>{order.email}</a>
-                </td>
-                <td className="order-price">{formatPrice(order.odhadovana_cena)}</td>
-                <td className="order-deadline">
-                  {order.deadline ? formatDate(order.deadline) : 'Nezadané'}
-                </td>
+                <td className="customer-name">{order.customer_name}</td>
                 <td className="order-status">
                   <span 
                     className="status-badge"
@@ -143,10 +127,13 @@ function OrdersTable() {
                     {getStatusText(order.status)}
                   </span>
                 </td>
-                <td className="order-created">{formatDate(order.datum_vytvorenia)}</td>
+                <td className="order-deadline">
+                  {order.deadline ? formatDate(order.deadline) : 'Nezadané'}
+                </td>
+                <td className="order-price">{formatPrice(order.price)}</td>
                 <td className="order-actions">
                   <button
-                    onClick={() => navigate(`/admin/order/${order.id}`)}
+                    onClick={() => navigate(`/admin/orders/${order.id}`)}
                     className="manage-btn"
                     title="Spravovať objednávku"
                   >

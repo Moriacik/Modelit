@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { getOrder, getUploadedFiles, downloadFile } from '@/services/api';
+import ReviewForm from './ReviewForm';
 import './OrderInfoUser.css';
-import PaymentPlanSection from './PaymentPlanSection';
+
+const API_BASE = '/index.php';
 
 const OrderInfoUser = () => {
   const { orderToken } = useParams();
@@ -9,64 +12,27 @@ const OrderInfoUser = () => {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [actionLoading, setActionLoading] = useState(false);
-  const [message, setMessage] = useState('');
-  const [negotiations, setNegotiations] = useState([]);
-  const [newCounterOffer, setNewCounterOffer] = useState('');
-  const [counterOfferNote, setCounterOfferNote] = useState('');
-
-  // Handler pre aktualizáciu objednávky po platbe
-  const handleOrderUpdate = (updatedOrder) => {
-    setOrder(updatedOrder);
-    // Reload order details zo serveru aby bol state synchronizovaný
-    const reloadOrderDetails = async () => {
-      try {
-        const response = await fetch(`/app/src/php/get-order-details.php?token=${orderToken}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        });
-
-        const result = await response.json();
-        if (result.success) {
-          setOrder(result.order);
-        }
-      } catch (error) {
-        console.error('Error reloading order details:', error);
-      }
-    };
-    
-    // Reload po 500ms aby backend stihol updatovať
-    setTimeout(reloadOrderDetails, 500);
-  };
+  const [successMessage, setSuccessMessage] = useState('');
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [filesLoading, setFilesLoading] = useState(false);
 
   // Načítanie detailov objednávky
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
-        const response = await fetch(`/app/src/php/get-order-details.php?token=${orderToken}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        });
-
-        const result = await response.json();
-        
+        const result = await getOrder(orderToken);
         if (result.success) {
-          setOrder(result.order);
-          setNegotiations(result.negotiations || []);
-          // Nastavenie novej ponuky ak existuje pending ponuka od admina
-          const pendingAdminOffer = (result.negotiations || []).find(n => n.offered_by === 'admin' && n.status === 'pending');
-          if (pendingAdminOffer) {
-            setNewCounterOffer(pendingAdminOffer.price);
+          setOrder(result.data);
+          
+          // Načítať súbory ak je objednávka dokončená
+          if (result.data.status === 'completed' && result.data.final_ready) {
+            await fetchUploadedFiles();
           }
         } else {
           setError(result.message || 'Objednávka nebola nájdená');
         }
-      } catch (error) {
-        console.error('Error fetching order details:', error);
+      } catch (err) {
+        console.error('Error fetching order:', err);
         setError('Chyba pri načítaní objednávky');
       } finally {
         setLoading(false);
@@ -79,149 +45,32 @@ const OrderInfoUser = () => {
       setError('Neplatný token objednávky');
       setLoading(false);
     }
-
-    // Automatické reloadovanie dát každých 5 sekúnd
-    const interval = setInterval(() => {
-      if (orderToken) {
-        fetchOrderDetails();
-      }
-    }, 5000);
-
-    // Reloadovanie dát keď sa okno vráti do focusu
-    const handleFocus = () => {
-      if (orderToken) {
-        fetchOrderDetails();
-      }
-    };
-
-    window.addEventListener('focus', handleFocus);
-
-    // Cleanup
-    return () => {
-      clearInterval(interval);
-      window.removeEventListener('focus', handleFocus);
-    };
   }, [orderToken]);
 
-  // Funkcia pre prijatie cenovej ponuky od admina
-  const handleAcceptPrice = async () => {
-    setActionLoading(true);
-    setMessage('');
-
+  const fetchUploadedFiles = async () => {
     try {
-      const response = await fetch('/app/src/php/accept-counter-offer.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          order_token: orderToken
-        })
-      });
-
-      const result = await response.json();
-      
+      setFilesLoading(true);
+      const result = await getUploadedFiles(orderToken);
       if (result.success) {
-        setMessage('Cenová ponuka bola úspešne prijatá!');
-        setOrder(prev => ({ ...prev, status: 'in_progress', price_status: 'agreed', agreed_price: result.agreed_price }));
-        // Aktualizácia vyjednávania
-        const updatedNegotiations = negotiations.map(n => 
-          n.offered_by === 'admin' && n.status === 'pending' ? { ...n, status: 'accepted' } : n
-        );
-        setNegotiations(updatedNegotiations);
+        setUploadedFiles(result.data.files || []);
       } else {
-        setMessage(result.message || 'Chyba pri spracovaní požiadavky');
+        console.error('Failed to fetch files:', result.message);
       }
-    } catch (error) {
-      console.error('Error accepting price:', error);
-      setMessage('Chyba pri komunikácii so serverom');
+    } catch (err) {
+      console.error('Error fetching files:', err);
     } finally {
-      setActionLoading(false);
+      setFilesLoading(false);
     }
   };
 
-  // Funkcia pre odoslanie protinávrhov od klienta
-  const handleSubmitCounterOffer = async () => {
-    if (!newCounterOffer || parseFloat(newCounterOffer) <= 0) {
-      setMessage('Zadajte platnú cenu');
-      return;
-    }
-
-    setActionLoading(true);
-    setMessage('');
-
-    try {
-      const response = await fetch('/app/src/php/submit-counter-offer.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          order_id: order.id,
-          counter_price: parseFloat(newCounterOffer),
-          note: counterOfferNote,
-          offered_by: 'customer'
-        })
-      });
-
-      const result = await response.json();
-      
-      if (result.success) {
-        setMessage('Váš protinávrh bol úspešne odoslaný správcovi!');
-        setNewCounterOffer('');
-        setCounterOfferNote('');
-        // Reload data
-        setTimeout(() => {
-          window.location.reload();
-        }, 1500);
-      } else {
-        setMessage(result.message || 'Chyba pri odosielaní protinávrhov');
-      }
-    } catch (error) {
-      console.error('Error submitting counter offer:', error);
-      setMessage('Chyba pri komunikácii so serverom');
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
-  // Funkcia pre stiahnutie súboru
-  const handleDownloadFile = (filename) => {
-    const downloadUrl = `/app/uploads/completed/${filename}`;
-    const link = document.createElement('a');
-    link.href = downloadUrl;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  // Funkcia pre určenie farby stavu
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'pending': return '#f9b400';
-      case 'in_progress': return '#08d8c0';
-      case 'completed': return '#4CAF50';
-      case 'cancelled': return '#e55f42';
-      case 'price_negotiation': return '#ff9800';
-      case 'accepted': return '#4CAF50';
-      case 'rejected': return '#e55f42';
-      default: return '#666';
-    }
-  };
-
-  // Funkcia pre preklad stavu
   const getStatusText = (status) => {
-    switch (status) {
-      case 'pending': return 'Čaká na spracovanie';
-      case 'in_progress': return 'V spracovaní';
-      case 'completed': return 'Dokončená';
-      case 'cancelled': return 'Zrušená';
-      case 'price_negotiation': return 'Cenové vyjednávanie';
-      case 'accepted': return 'Prijatá';
-      case 'rejected': return 'Odmietnutá';
-      default: return 'Neznámy stav';
-    }
+    const statusMap = {
+      'new': 'Nová',
+      'in_progress': 'V procese',
+      'completed': 'Dokončená',
+      'canceled': 'Zrušená'
+    };
+    return statusMap[status] || 'Neznámy stav';
   };
 
   if (loading) {
@@ -239,7 +88,6 @@ const OrderInfoUser = () => {
     return (
       <div className="order-info-page">
         <div className="error-container">
-          <div className="error-icon"></div>
           <h2>Chyba</h2>
           <p>{error}</p>
           <button onClick={() => navigate('/login')} className="back-btn">
@@ -250,286 +98,273 @@ const OrderInfoUser = () => {
     );
   }
 
+  if (!order) {
+    return (
+      <div className="order-info-page">
+        <div className="error-container">
+          <p>Objednávka nenájdená</p>
+          <button onClick={() => navigate('/login')} className="back-btn">
+            Späť na prihlásenie
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  const getStatusColor = (status) => {
+    const colorMap = {
+      'new': '#f39c12',
+      'in_progress': '#3498db',
+      'completed': '#27ae60',
+      'canceled': '#e74c3c'
+    };
+    return colorMap[status] || '#95a5a6';
+  };
+
+  const getStatusIcon = (status) => {
+    const iconMap = {
+      'new': '📋',
+      'in_progress': '⚙️',
+      'completed': '✅',
+      'canceled': '❌'
+    };
+    return iconMap[status] || '📋';
+  };
+
+  const handleAcceptPrice = async () => {
+    try {
+      const response = await fetch(`${API_BASE}?path=/orders/${orderToken}/accept-price`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        setSuccessMessage('Cena bola akceptovaná! Dodávateľ začne pracovať na vašej objednávke.');
+        setTimeout(() => {
+          setOrder({...order, status: 'in_progress'});
+          setSuccessMessage('');
+        }, 2000);
+      } else {
+        setError(result.message || 'Chyba pri akceptácii ceny');
+      }
+    } catch (err) {
+      setError('Chyba pri komunikácii so serverom');
+      console.error('Accept price error:', err);
+    }
+  };
+
+  const handleRejectPrice = async () => {
+    if (window.confirm('Chceš odmietnuť túto cenu? Objednávka bude zrušená.')) {
+      try {
+        const response = await fetch(`${API_BASE}?path=/orders/${orderToken}/reject-price`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+          setSuccessMessage('Cena bola odmietnutá. Objednávka bola zrušená.');
+          setTimeout(() => {
+            setOrder({...order, status: 'canceled', price: null});
+            setSuccessMessage('');
+          }, 2000);
+        } else {
+          setError(result.message || 'Chyba pri odmietnutí ceny');
+        }
+      } catch (err) {
+        setError('Chyba pri komunikácii so serverom');
+        console.error('Reject price error:', err);
+      }
+    }
+  };
+
   return (
     <div className="order-info-page">
       <div className="order-info-container">
-        
-        {/* Header Section */}
+        {/* Header */}
         <div className="order-header">
-          <div className="order-title">
-            <h1>Detail objednávky</h1>
-            <span className="order-code">#{order.order_token}</span>
-          </div>
-          <div className="order-date">
-            Vytvorené: {new Date(order.datum_vytvorenia).toLocaleDateString('sk-SK')}
-          </div>
+          <h1>📋 Detail objednávky</h1>
+          <p className="subtitle">Sleduj progres svojej objednávky v reálnom čase</p>
         </div>
 
-        {/* Status Progress */}
-        <div className="status-section">
-          <h2>Stav objednávky</h2>
-          <div className="status-progress">
-            <div className="status-item">
-              <div className={`status-circle ${['pending', 'in_progress', 'completed', 'accepted'].includes(order.status) ? 'active' : ''}`}>
-                <div className="status-icon pending-icon"></div>
-              </div>
-              <span>Prijatá</span>
-            </div>
-            
-            <div className="status-line"></div>
-            
-            <div className="status-item">
-              <div className={`status-circle ${['in_progress', 'completed', 'accepted'].includes(order.status) ? 'active' : ''}`}>
-                <div className="status-icon progress-icon"></div>
-              </div>
-              <span>V spracovaní</span>
-            </div>
-            
-            <div className="status-line"></div>
-            
-            <div className="status-item">
-              <div className={`status-circle ${['completed', 'accepted'].includes(order.status) ? 'active' : ''}`}>
-                <div className="status-icon completed-icon"></div>
-              </div>
-              <span>Dokončená</span>
-            </div>
+        {/* Status Card - Prominent */}
+        <div className="status-card-large" style={{ borderLeftColor: getStatusColor(order.status) }}>
+          <div className="status-icon-large" style={{ color: getStatusColor(order.status) }}>
+            {getStatusIcon(order.status)}
           </div>
-          
-          <div className="current-status">
-            <div 
-              className="status-badge" 
-              style={{ backgroundColor: getStatusColor(order.status) }}
-            >
+          <div className="status-info-large">
+            <span className="status-label">Stav objednávky</span>
+            <span className="status-text-large" style={{ color: getStatusColor(order.status) }}>
               {getStatusText(order.status)}
+            </span>
+          </div>
+        </div>
+
+        {/* Info Grid - 2 columns */}
+        <div className="info-grid">
+          {/* Basic Info Card */}
+          <div className="info-card">
+            <h3>📌 Základné informácie</h3>
+            <div className="info-row">
+              <span className="label">Meno:</span>
+              <span className="value">{order.customer_name}</span>
+            </div>
+            <div className="info-row">
+              <span className="label">Email:</span>
+              <span className="value">{order.customer_email}</span>
+            </div>
+            <div className="info-row">
+              <span className="label">Kód objednávky:</span>
+              <span className="value code">{order.order_token}</span>
+            </div>
+          </div>
+
+          {/* Timeline Card */}
+          <div className="info-card">
+            <h3>⏰ Časový plán</h3>
+            <div className="info-row">
+              <span className="label">Vytvorená:</span>
+              <span className="value">
+                {new Date(order.created_at).toLocaleDateString('sk-SK', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </span>
+            </div>
+            <div className="info-row">
+              <span className="label">Deadline:</span>
+              <span className="value deadline">
+                {new Date(order.deadline).toLocaleDateString('sk-SK', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Order Summary */}
-        <div className="order-summary">
-          <h2>Súhrn objednávky</h2>
-          <div className="summary-grid">
-            <div className="summary-item">
-              <label>Meno a priezvisko</label>
-              <span>{order.meno}</span>
+        {/* Description Card */}
+        <div className="info-card full-width">
+          <h3>📝 Popis projektu</h3>
+          <p className="description">{order.description}</p>
+        </div>
+
+        {/* Price Section */}
+        {order.status === 'new' && order.price > 0 && (
+          <div className="info-card full-width price-card price-proposal">
+            <h3>💰 Návrh ceny od dodávateľa</h3>
+            <div className="price-display">{order.price}€</div>
+            <div className="price-actions">
+              <button onClick={handleAcceptPrice} className="btn btn-success">
+                ✓ Prijať ponuku
+              </button>
+              <button onClick={handleRejectPrice} className="btn btn-danger">
+                ✗ Odmietnuť
+              </button>
             </div>
-            <div className="summary-item">
-              <label>Email</label>
-              <span>{order.email}</span>
-            </div>
-            <div className="summary-item full-width">
-              <label>Popis práce</label>
-              <span>{order.popis_prace}</span>
-            </div>
-            <div className="summary-item">
-              <label>Termín dokončenia</label>
-              <span>{new Date(order.deadline).toLocaleDateString('sk-SK')}</span>
-            </div>
-            <div className="summary-item">
-              <label>Odhadovaná cena</label>
-              <span>{order.odhadovana_cena}€</span>
-            </div>
-            {order.referencne_subory && order.referencne_subory.length > 0 && (
-              <div className="summary-item full-width">
-                <label>Referenčné súbory</label>
+          </div>
+        )}
+
+        {order.status === 'in_progress' && order.price > 0 && (
+          <div className="info-card full-width price-card price-accepted">
+            <h3>✔️ Dohodnutá cena</h3>
+            <div className="price-display agreed">{order.price}€</div>
+          </div>
+        )}
+
+        {order.status === 'new' && (!order.price || order.price === 0) && (
+          <div className="info-card full-width price-card price-waiting">
+            <h3>⏳ Čakanie na ponuku</h3>
+            <p>Dodávateľ čoskoro odošle svoju ponuku ceny. Buď trpezlivý 😊</p>
+          </div>
+        )}
+
+        {order.status === 'canceled' && (
+          <div className="info-card full-width price-card price-canceled">
+            <h3>❌ Objednávka zrušená</h3>
+            <p>Objednávka bola odmietnutá. Ak máš záujem, vytvoriť novú, vráť sa na úvodný formulár.</p>
+          </div>
+        )}
+
+        {/* Files Section */}
+        {order.status === 'completed' && order.final_ready && (
+          <>
+            <div className="info-card full-width">
+              <h3>📁 Hotové súbory</h3>
+              {filesLoading ? (
+                <p style={{ color: '#999' }}>Načítavam súbory...</p>
+              ) : uploadedFiles.length > 0 ? (
                 <div className="files-list">
-                  {order.referencne_subory.map((file, index) => (
-                    <span key={index} className="file-tag">
-                      {typeof file === 'string' ? file : file.original_name || file.filename || 'Súbor'}
-                    </span>
+                  {uploadedFiles.map((file, index) => (
+                    <div key={index} className="file-item">
+                      <div className="file-info">
+                        <span className="file-icon">📄</span>
+                        <div className="file-details">
+                          <p className="file-name">{file.originalName}</p>
+                          <p className="file-size">{file.displaySize}</p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => downloadFile(orderToken, file.name)}
+                        className="btn btn-small"
+                      >
+                        Stiahnuť
+                      </button>
+                    </div>
                   ))}
                 </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Price Negotiation Section */}
-        {(order.price_status !== 'pending' || negotiations.length > 0 || order.admin_price) && (
-          <div className="price-negotiation">
-            <h2>Cenové vyjednávanie</h2>
-            
-            <div className="price-history">
-              <div className="price-item client-price">
-                <label>Pôvodný váš návrh</label>
-                <span className="price">{order.odhadovana_cena}€</span>
-              </div>
+              ) : (
+                <p style={{ color: '#999' }}>Žiadne súbory na stahnutie</p>
+              )}
             </div>
 
-            {negotiations.length > 0 && (
-              <div className="negotiations-list">
-                {negotiations.map((neg, index) => (
-                  <div key={index} className={`negotiation-item ${neg.offered_by}`}>
-                    <div className="neg-left">
-                      <div className="neg-header">
-                        <span className="neg-by">
-                          {neg.offered_by === 'admin' ? 'Ponuka od správcu' : 'Váš protinávrh'}
-                        </span>
-                        <span className="neg-date">
-                          {new Date(neg.created_at).toLocaleDateString('sk-SK')}
-                        </span>
-                      </div>
-                      {neg.note && <div className="neg-note">{neg.note}</div>}
-                    </div>
-                    <div className="neg-right">
-                      <div className="neg-price">{neg.price}€</div>
-                      <div className={`neg-status ${neg.status}`}>
-                        {neg.status === 'pending' ? 'Čaká' : 
-                         neg.status === 'accepted' ? '✓ Prijatý' : '✕ Odmietnutý'}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {order.price_status === 'agreed' && (
-              <div className="price-agreed">
-                <div className="agreed-icon">✓</div>
-                <span>Cena bola odsúhlasená</span>
-                <div className="final-price">{order.agreed_price}€</div>
-              </div>
-            )}
-
-            {/* Actions for pending admin offer */}
-            {negotiations.find(n => n.offered_by === 'admin' && n.status === 'pending') && order.price_status !== 'agreed' && (
-              <div className="price-actions">
-                <button 
-                  onClick={handleAcceptPrice}
-                  disabled={actionLoading}
-                  className="accept-btn"
-                >
-                  {actionLoading ? 'Spracováva sa...' : 'Prijať ponuku'}
-                </button>
-              </div>
-            )}
-
-            {/* Counter offer form if not agreed */}
-            {order.price_status !== 'agreed' && order.status !== 'completed' && order.status !== 'cancelled' && (
-              <div className="counter-offer-form">
-                <h3>Váš protinávrh</h3>
-                <div className="form-group">
-                  <label>Navrhovaná cena (€)</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    value={newCounterOffer}
-                    onChange={(e) => setNewCounterOffer(e.target.value)}
-                    placeholder="0.00"
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Poznámka (voliteľné)</label>
-                  <textarea
-                    value={counterOfferNote}
-                    onChange={(e) => setCounterOfferNote(e.target.value)}
-                    placeholder="Dôvod úpravy ceny, vysvetlenie..."
-                    rows="3"
-                  />
-                </div>
-                <button 
-                  onClick={handleSubmitCounterOffer}
-                  disabled={actionLoading}
-                  className="submit-offer-btn"
-                >
-                  {actionLoading ? 'Odosielam...' : 'Odoslať protinávrh'}
-                </button>
-              </div>
-            )}
-          </div>
+            <ReviewForm 
+              orderId={order.id} 
+              onSuccess={() => {
+                setSuccessMessage('Ďakujeme za vašu recenziu! 🙏');
+                setTimeout(() => setSuccessMessage(''), 3000);
+              }}
+            />
+          </>
         )}
 
-        {/* Payment Plan Section */}
-        {order && order.agreed_price && (
-          <PaymentPlanSection order={order} onOrderUpdate={handleOrderUpdate} />
-        )}
-
-        {/* Download Section */}
-        {order.status === 'completed' && order.final_files && order.final_files.length > 0 && order.final_paid_at && (
-          <div className="download-section">
-            <h2>Stiahnutie finálneho produktu</h2>
-            <p>Váš projekt je dokončený! Môžete si stiahnuť finálne súbory:</p>
-            <div className="download-files">
-              {order.final_files.map((file, index) => (
-                <div key={index} className="download-item">
-                  <div className="file-info">
-                    <div className="file-icon"></div>
-                    <div className="file-details">
-                      <span className="file-name">
-                        {typeof file === 'string' ? file : file.original_name || file.filename || 'Súbor'}
-                      </span>
-                      <span className="file-size">
-                        {typeof file === 'object' && file.size 
-                          ? `${(file.size / 1024).toFixed(1)} KB` 
-                          : 'Neznáma veľkosť'
-                        }
-                      </span>
-                    </div>
-                  </div>
-                  <button 
-                    onClick={() => handleDownloadFile(
-                      typeof file === 'string' ? file : file.filename || file.original_name
-                    )}
-                    className="download-btn"
-                  >
-                    <div className="download-icon"></div>
-                    Stiahnuť
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Download Section - Payment Pending */}
-        {order.status === 'completed' && order.final_files && order.final_files.length > 0 && !order.final_paid_at && (
-          <div className="download-section" style={{opacity: 0.6}}>
-            <h2>Stiahnutie finálneho produktu</h2>
-            <p style={{color: '#FF6B6B', fontWeight: '600'}}>Finálne súbory budú dostupné po zaplatení finálnej čiastky</p>
-            <div className="download-files">
-              {order.final_files.map((file, index) => (
-                <div key={index} className="download-item">
-                  <div className="file-info">
-                    <div className="file-icon"></div>
-                    <div className="file-details">
-                      <span className="file-name">
-                        {typeof file === 'string' ? file : file.original_name || file.filename || 'Súbor'}
-                      </span>
-                      <span className="file-size">
-                        {typeof file === 'object' && file.size 
-                          ? `${(file.size / 1024).toFixed(1)} KB` 
-                          : 'Neznáma veľkosť'
-                        }
-                      </span>
-                    </div>
-                  </div>
-                  <button 
-                    disabled
-                    className="download-btn"
-                    style={{opacity: 0.5, cursor: 'not-allowed'}}
-                  >
-                    <div className="download-icon"></div>
-                    Čakajú na zaplatenie
-                  </button>
-                </div>
-              ))}
+        {/* Completion Banner */}
+        {order.status === 'completed' && (
+          <div className="success-banner">
+            <span className="banner-icon">🎉</span>
+            <div>
+              <h3>Objednávka je hotová!</h3>
+              <p>Ďakujeme za vašu dôveru. Sme radi, že sme ti mohli pomôcť!</p>
             </div>
           </div>
         )}
 
         {/* Messages */}
-        {message && (
-          <div className={`message-container ${message.includes('úspešne') ? 'success' : 'error'}`}>
-            <div className="message-icon"></div>
-            <div className="message-text">{message}</div>
+        {successMessage && (
+          <div className="alert alert-success">
+            <span>✅</span> {successMessage}
+          </div>
+        )}
+
+        {error && (
+          <div className="alert alert-error">
+            <span>⚠️</span> {error}
           </div>
         )}
 
         {/* Back Button */}
-        <div className="order-actions">
-          <button onClick={() => navigate('/login')} className="back-btn">
-            Späť na prihlásenie
+        <div className="action-footer">
+          <button onClick={() => navigate('/login')} className="btn btn-outline">
+            ← Späť na prihlásenie
           </button>
         </div>
       </div>

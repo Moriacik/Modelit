@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { adminLogin } from '@/services/api';
 import './Login.css';
 
 function Login() {
@@ -10,20 +11,50 @@ function Login() {
     password: ''
   });
   const [userData, setUserData] = useState({
-    orderCode: ''
+    orderToken: ''
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
   const validateAdminInput = () => {
-    if (!adminData.username.trim()) {
+    const username = adminData.username.trim();
+    const password = adminData.password;
+
+    if (!username) {
       setMessage('Meno používateľa je povinné');
       return false;
     }
-    if (!adminData.password) {
+
+    if (username.length < 3) {
+      setMessage('Meno používateľa musí mať aspoň 3 znaky');
+      return false;
+    }
+
+    if (username.length > 50) {
+      setMessage('Meno používateľa môže mať maximálne 50 znakov');
+      return false;
+    }
+
+    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+      setMessage('Meno používateľa smie obsahovať iba písmená, čísla a podčiarkovník');
+      return false;
+    }
+
+    if (!password) {
       setMessage('Heslo je povinné');
       return false;
     }
+
+    if (password.length < 6) {
+      setMessage('Heslo musí mať aspoň 6 znakov');
+      return false;
+    }
+
+    if (password.length > 100) {
+      setMessage('Heslo je príliš dlhé');
+      return false;
+    }
+
     return true;
   };
 
@@ -38,20 +69,11 @@ function Login() {
     setLoading(true);
 
     try {
-      const response = await fetch('/app/src/php/admin-login.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(adminData)
-      });
-
-      const result = await response.json();
+      const result = await adminLogin(adminData.username, adminData.password);
       
       if (result.success) {
         setMessage('Prihlásenie úspešné!');
-        // Presmerovanie na admin panel
-        localStorage.setItem('adminToken', result.token);
+        localStorage.setItem('adminToken', result.data.token);
         setTimeout(() => {
           navigate('/admin');
         }, 1000);
@@ -67,14 +89,31 @@ function Login() {
   };
 
   const validateUserInput = () => {
-    if (!userData.orderCode.trim()) {
+    const orderToken = userData.orderToken.trim().toUpperCase();
+
+    if (!orderToken) {
       setMessage('Kód objednávky je povinný');
       return false;
     }
-    if (userData.orderCode.length == 5) {
-      setMessage('Kód objednávky musí mať presne 17 znakov');
+
+    if (orderToken.length !== 17) {
+      setMessage('Kód objednávky musí mať presne 17 znakov (formát: MODELIT-XXXXXXXXX)');
       return false;
     }
+
+    if (!/^[A-Z0-9\-]+$/.test(orderToken)) {
+      setMessage('Kód objednávky smie obsahovať iba veľké písmená, čísla a pomlčku');
+      return false;
+    }
+
+    if (!orderToken.startsWith('MODELIT-')) {
+      setMessage('Kód objednávky musí začínať na "MODELIT-"');
+      return false;
+    }
+
+    // Aktualizovať formát v state (uppercase)
+    setUserData({ orderToken });
+
     return true;
   };
 
@@ -89,27 +128,12 @@ function Login() {
     setLoading(true);
 
     try {
-      const response = await fetch('/app/src/php/user-login.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData)
-      });
-
-      const result = await response.json();
-      
-      if (result.success) {
-        setMessage('Prihlásenie úspešné!');
-        // Presmerovanie na užívateľský panel alebo detail objednávky
-        localStorage.setItem('userToken', result.token);
-        localStorage.setItem('orderToken', result.orderToken);
-        setTimeout(() => {
-          navigate(`/order-detail/${result.orderToken}`);
-        }, 1000);
-      } else {
-        setMessage(result.message || 'Neplatný kód objednávky');
-      }
+      // Priamo presmerujeme na detail objednávky
+      localStorage.setItem('orderToken', userData.orderToken);
+      setMessage('Presmerovávam...');
+      setTimeout(() => {
+        navigate(`/order-detail/${userData.orderToken}`);
+      }, 500);
     } catch (error) {
       setMessage('Chyba pri prihlasovaní');
       console.error('User login error:', error);
@@ -196,25 +220,26 @@ function Login() {
             <form onSubmit={handleUserLogin} className="login-form user-form">
               
               <div className="form-group">
-                <label htmlFor="orderCode">Kód objednávky</label>
+                <label htmlFor="orderToken">Kód objednávky</label>
                 <div className="input-wrapper">
                   <input
                     type="text"
-                    id="orderCode"
-                    value={userData.orderCode}
-                    onChange={(e) => setUserData({...userData, orderCode: e.target.value})}
+                    id="orderToken"
+                    value={userData.orderToken}
+                    onChange={(e) => setUserData({...userData, orderToken: e.target.value})}
                     required
-                    placeholder="ORD-2025-ABC12345"
+                    disabled={loading}
+                    placeholder="MODELIT-ABC1234567"
                   />
                 </div>
               </div>
               
               <div className="order-help">
-                <p>Váš kód objednávky nájdete v potvrdzujúcom e-maile</p>
+                <p>Váš kód objednávky nájdete v potvrdzujúcom e-maile alebo správe po vytvorení objednávky</p>
               </div>
               
               <button type="submit" disabled={loading} className="login-btn user-btn">
-                <span>{loading ? 'Overovanie...' : 'Pokračovať'}</span>
+                <span>{loading ? 'Presmerovávam...' : 'Pokračovať'}</span>
                 <div className="btn-arrow">→</div>
               </button>
             </form>
